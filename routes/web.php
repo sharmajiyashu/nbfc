@@ -17,6 +17,7 @@ Route::get('/', function () {
     return view('dashboard');
 })->name('dashboard');
 
+
 Route::get('logout', function () {
     return view('dashboard');
 })->name('admin.logout');
