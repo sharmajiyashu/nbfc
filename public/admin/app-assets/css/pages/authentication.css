@@ -64,11 +64,18 @@
 
 .auth-wrapper .brand-logo {
   display: flex;
-  justify-content: center;
+  /* justify-content: center; */
+  background:brown;
+  /* background:#f53f3e; */
+  color: #fff;
+  padding-top: 7px;
   margin: 1rem 0 2rem 0; }
 
 .auth-wrapper .brand-logo .brand-text {
-  font-weight: 600; }
+  font-weight: 600;
+  padding: 10px 0px 0px 0px;
+  background-color: brown;
+}
 
 .auth-wrapper .auth-footer-btn .btn {
   padding: 0.6rem !important; }

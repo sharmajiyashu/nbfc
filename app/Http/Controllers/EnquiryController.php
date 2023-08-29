@@ -14,7 +14,8 @@ class EnquiryController extends Controller
      */
     public function index()
     {
-        //
+        $enquires = [];
+        return view('enquires.index',compact('enquires'));
     }
 
     /**
@@ -24,7 +25,7 @@ class EnquiryController extends Controller
      */
     public function create()
     {
-        //
+        return view('enquires.create');
     }
 
     /**

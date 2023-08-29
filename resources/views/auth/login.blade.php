@@ -9,7 +9,7 @@
     <meta name="description" content="Vuexy admin is super flexible, powerful, clean &amp; modern responsive bootstrap 4 admin template with unlimited possibilities.">
     <meta name="keywords" content="admin template, Vuexy admin template, dashboard template, flat admin template, responsive admin template, web app">
     <meta name="author" content="PIXINVENT">
-    <title>Login Page - Medico Agencies</title>
+    <title>Login Page - Kota Auto Finance Limited</title>
     <link rel="apple-touch-icon" href="{{ asset('public/admin/app-assets/images/ico/apple-icon-120.png')}}">
     <link rel="shortcut icon" type="image/x-icon" href="{{ asset('public/admin/app-assets/images/ico/favicon.ico')}}">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,300;0,400;0,500;0,600;1,400;1,500;1,600" rel="stylesheet">
@@ -56,9 +56,9 @@
                         <!-- Login basic -->
                         <div class="card mb-0">
                             <div class="card-body">
-                                <a href="#" class="brand-logo">
+                                <a href="#" class="brand-logo" >
                                     
-                                    <h2 class="brand-text text-primary ms-1" style="color:#386fb9 !important;">Medico Agencies</h2>
+                                    <h2 class="brand-text  ms-1" style="color: white !important; ">Kota Auto Finance Limited</h2>
                                 </a>
 
                                 @if ($errors->any())
@@ -72,7 +72,7 @@
                                     @endforeach
                                 @endif
 
-                                <h4 class="card-title mb-1">Welcome to Medico Agencies! 👋</h4>
+                                <h4 class="card-title mb-1">Welcome to KAFL! 👋</h4>
                                 <p class="card-text mb-2">Please sign-in to your account and start the adventure</p>
 
                                 <form class="auth-login-form mt-2" action="{{ route('check_login') }}" method="POST">
@@ -94,7 +94,7 @@
                                             <span class="input-group-text cursor-pointer"><i data-feather="eye"></i></span>
                                         </div>
                                     </div>
-                                    <button class="btn btn-primary w-100" tabindex="4">Sign in</button>
+                                    <button class="btn btn-danger w-100" tabindex="4">Sign in</button>
                                 </form>
 
                                 

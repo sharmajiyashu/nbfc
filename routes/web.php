@@ -1,6 +1,10 @@
 <?php
 
+use App\Http\Controllers\EnquiryController;
+use App\Http\Controllers\LoginController;
 use Illuminate\Support\Facades\Route;
+
+
 
 /*
 |--------------------------------------------------------------------------
@@ -13,11 +17,11 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('dashboard');
-})->name('dashboard');
+Route::group(['middleware' => 'auth'], function () {
+    Route::get('/', [LoginController::class,'dashboard'])->name('dashboard');
+    Route::get('logout',[LoginController::class,'logout'])->name('admin.logout');
+    Route::resource('enquires',EnquiryController::class);
+});
 
-
-Route::get('logout', function () {
-    return view('dashboard');
-})->name('admin.logout');
+Route::get('login',[LoginController::class,'index'])->name('login');
+Route::post('check_login',[LoginController::class,'check_login'])->name('check_login');
