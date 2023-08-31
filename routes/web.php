@@ -21,6 +21,9 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/', [LoginController::class,'dashboard'])->name('dashboard');
     Route::get('logout',[LoginController::class,'logout'])->name('admin.logout');
     Route::resource('enquires',EnquiryController::class);
+    Route::get('application',function(){
+        return view('application-forms.create');
+    })->name('application');
 });
 
 Route::get('login',[LoginController::class,'index'])->name('login');

@@ -126,10 +126,10 @@
                                                     <label class="form-label" for="first-name-column">Payment Mode <span class="error">*</span></label>
                                                     <br>
                                                     
-                                                    <input type="radio" id="first-name-column" name="login_charge" placeholder="Login Charge In Amount" oninput=""  value="{{ old('login_charge') }}" />
+                                                    <input type="radio" id="first-name-column" name="pay_mode" placeholder="Login Charge In Amount" oninput=""  value="cash" checked />
                                                     <span>Cash</span>
                                                     &nbsp;&nbsp;&nbsp;
-                                                    <input type="radio" id="first-name-column" name="login_charge" placeholder="Login Charge In Amount" oninput=""  value="{{ old('login_charge') }}" />
+                                                    <input type="radio" id="first-name-column" name="pay_mode" placeholder="Login Charge In Amount" oninput=""  value="online_transaction" />
                                                     <span>Online Transaction</span>
 
                                                 </div>
@@ -162,7 +162,7 @@
                                             <div class="col-md-6 col-12">
                                                 <div class="mb-1">
                                                     <label class="form-label" for="first-name-column">Voter ID No.<span class="error">*</span></label>
-                                                    <input type="number" id="first-name-column" name="vode_id" class="form-control" placeholder="Voter ID No." oninput=""  value="{{ old('vode_id') }}" />
+                                                    <input type="number" id="first-name-column" name="voder_id" class="form-control" placeholder="Voter ID No." oninput=""  value="{{ old('voder_id') }}" />
                                                 </div>
                                             </div>
 

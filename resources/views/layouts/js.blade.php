@@ -16,6 +16,12 @@
 
 <!-- BEGIN: Page JS-->
 <script src="{{ asset('public/admin/app-assets/js/scripts/pages/dashboard-ecommerce.js')}}"></script>
+
+<script src="{{ asset('public/admin/app-assets/js/scripts/forms/form-wizard.js')}}"></script>
+
+<script src="{{ asset('public/admin/app-assets/vendors/js/forms/select/select2.full.min.js')}}"></script>
+<script src="{{ asset('public/admin/app-assets/vendors/js/forms/wizard/bs-stepper.min.js')}}"></script>
+<script src="{{ asset('public/admin/app-assets/vendors/js/forms/validation/jquery.validate.min.js')}}"></script>
 <!-- END: Page JS-->
 
 <script>

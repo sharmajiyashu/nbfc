@@ -88,7 +88,7 @@
                                                     <button class="btn btn-success">Update</button>
                                                 </td>
                                                 <td>
-                                                    <a href="{{ route('application') }}"><button class="btn btn-warning">Fill Application Form</button></a>
+                                                    <button class="btn btn-warning">Fill Application Form</button>
                                                 </td>
                                                 <td>{{ date('d-M-y H:i:s',strtotime($val->created_at)) }}</td>
                                                 <td>

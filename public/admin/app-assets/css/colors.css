@@ -332,18 +332,20 @@ input:focus ~ .bg-light {
   color: #7367f0 !important; }
 
 .overlay-primary {
-  background: #7367f0;
+  background: #d73925;
   /* The Fallback */
   background: rgba(115, 103, 240, 0.6); }
 
+  
 .btn-primary {
-  border-color: #356fbd !important;
-  background-color: #356fbd !important;
-  color: #fff !important; }
+  border-color: #a52a2a !important;
+    background-color: #a52a2a !important;
+  color: #fff !important;
+}
 
 .btn-primary:focus, .btn-primary:active, .btn-primary.active {
   color: #fff;
-  background-color: #9ad772 !important; }
+  background-color: #d73925 !important; }
 
 .btn-primary:hover:not(.disabled):not(:disabled) {
   box-shadow: 0 8px 25px -8px #7367f0; }

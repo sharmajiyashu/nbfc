@@ -123,11 +123,11 @@ pre code {
   padding-left: 0.75rem; }
 
 .table.table-dark tr > * {
-  border-bottom-color: #3b4253 !important; }
+  border-bottom-color: #a52a2a !important; }
 
 .table:not(.table-dark):not(.table-light) thead:not(.table-dark) th,
 .table:not(.table-dark):not(.table-light) tfoot:not(.table-dark) th {
-  background-color: #d73925;
+  background-color: #a52a2a;
   color: #fcfdfe;
 }
 
