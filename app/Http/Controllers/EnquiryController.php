@@ -37,7 +37,6 @@ class EnquiryController extends Controller
      */
     public function store(Request $request)
     {
-
         $validated = $request->validate([
             'first_name' => 'required|max:255',
             'last_name' => 'required|max:255',
@@ -53,6 +52,8 @@ class EnquiryController extends Controller
             'other_document' => 'nullable|max:20',
             'pay_mode' => 'required'
         ]);
+
+        $validated['enquiry_id'] = self::GenerateId();
 
         $enquiry = Enquiry::create($validated);
         if(!empty($request->aadhar_number)){
@@ -145,4 +146,15 @@ class EnquiryController extends Controller
     {
         //
     }
+
+    function GenerateId(){
+        $store_code = 'ENQ'.mt_rand(10000000, 99999999);
+        if(Enquiry::where('enquiry_id',$store_code)->first()){
+            $this->GenerateId();
+        }else{
+            return $store_code;
+        }
+    }
+
+
 }

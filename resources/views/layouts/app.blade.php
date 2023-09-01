@@ -39,10 +39,6 @@
     <!-- END: Page CSS-->
 
     <link rel="stylesheet" type="text/css" href="{{ asset('public/admin/app-assets/css/plugins/forms/form-wizard.css')}}">
-    {{-- <link rel="stylesheet" type="text/css" href="../../../app-assets/css/core/menu/menu-types/vertical-menu.css"> --}}
-
-    <link rel="stylesheet" type="text/css" href="{{ asset('public/admin/app-assets/vendors/css/forms/select/select2.min.css')}}">
-    {{-- <link rel="stylesheet" type="text/css" href="../../../app-assets/css/plugins/forms/form-validation.css"> --}}
 
     <link rel="stylesheet" type="text/css" href="{{ asset('public/admin/app-assets/vendors/css/forms/wizard/bs-stepper.min.css')}}">
     <link rel="stylesheet" type="text/css" href="{{ asset('public/admin/app-assets/css/plugins/forms/form-validation.css')}}">
@@ -50,6 +46,14 @@
     <link rel="stylesheet" type="text/css" href="{{ asset('public/admin/assets/css/style.css')}}">
     <!-- END: Custom CSS-->
     <link rel="stylesheet" href="{{ asset('public/admin/assets/datatable/datatable.css') }}">
+
+
+    <link rel="stylesheet" type="text/css" href="{{ asset('public/admin/app-assets/vendors/css/vendors.min.css')}}">
+    <link rel="stylesheet" type="text/css" href="{{ asset('public/admin/app-assets/vendors/css/forms/select/select2.min.css')}}">
+
+    <link rel="stylesheet" type="text/css" href="{{ asset('public/admin/app-assets/css/components.css')}}">
+
+    
     <style>
         .card-datatable{
             padding: 9px;

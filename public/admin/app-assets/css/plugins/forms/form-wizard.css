@@ -67,7 +67,7 @@
   box-shadow: 0 3px 6px 0 #a52a2a(115, 103, 240, 0.4); }
 
 .bs-stepper .bs-stepper-header .step.active .step-trigger .bs-stepper-label .bs-stepper-title {
-  color: #d73925;
+  color: #a52a2a;
  }
 
 .bs-stepper .bs-stepper-header .step.crossed .step-trigger .bs-stepper-box {

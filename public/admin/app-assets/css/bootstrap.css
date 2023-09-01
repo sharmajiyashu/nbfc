@@ -199,7 +199,7 @@ a {
   text-decoration: none; }
 
 a:hover {
-  color: #386fb9;
+  color: #d73925;
   text-decoration: none; }
 
 a:not([href]):not([class]), a:not([href]):not([class]):hover {
@@ -1653,7 +1653,7 @@ progress {
 .form-label {
   margin-bottom: 0.2857rem;
     font-size: 1rem;
-    color: #636262;
+    color: #424141;
     font-weight: 500;
 }
 

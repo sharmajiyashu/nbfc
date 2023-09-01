@@ -56,13 +56,14 @@
                                         <thead>
                                             <tr>
                                                 <th>Sr.no</th>
+                                                <th>Enquiry <br> ID</th>
                                                 <th>Customer Name</th>
                                                 <th>Mobile</th>
                                                 <th>City</th>
                                                 <th>Pin Code</th>
                                                 <th>Comment</th>
                                                 <th>Login Charge</th>
-                                                <th>Status</th>
+                                                {{-- <th>Status</th> --}}
                                                 <th>Update Status</th>
                                                 <th>Member Application</th>
                                                 <th>Created Date</th>
@@ -74,6 +75,7 @@
                                             @foreach($enquires as $key => $val)
                                             <tr>
                                                 <th scope="row">{{ $i }}</th>
+                                                <th><a href="#">{{ $val->enquiry_id }}</a></th>
                                                 <td><strong>{{ $val->first_name }} {{ $val->last_name }}</strong></td>
                                                 <td>{{ $val->mobile }}</td>
                                                 <td>{{ $val->city }}</td>
@@ -82,13 +84,13 @@
                                                 <td>{{ $val->login_charge }}</td>
                                                 
                                                 <td style="text-transform: capitalize;">{{ $val->status }} 
-                                                    
-                                                </td>
-                                                <td>
+
+                                                    <br>
                                                     <button class="btn btn-success">Update</button>
                                                 </td>
+                                                
                                                 <td>
-                                                    <a href="{{ route('application') }}"><button class="btn btn-warning">Fill Application Form</button></a>
+                                                    <a href="{{ route('application-form',$val->enquiry_id) }}"><button class="btn btn-warning">Fill Application Form</button></a>
                                                 </td>
                                                 <td>{{ date('d-M-y H:i:s',strtotime($val->created_at)) }}</td>
                                                 <td>
