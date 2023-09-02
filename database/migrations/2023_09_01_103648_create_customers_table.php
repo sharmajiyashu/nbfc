@@ -17,6 +17,7 @@ return new class extends Migration
             $table->id();
             $table->bigInteger('enquiry_id');
             $table->string('status')->nullable();
+            $table->string('type')->nullable();
             $table->string('image')->nullable();
             $table->string('title')->nullable();
             $table->string('gender')->nullable();

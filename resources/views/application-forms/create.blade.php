@@ -101,11 +101,22 @@
                                     <h5 class="mb-0">Customer Details</h5>
                                     <small class="text-muted">Enter Your Account Details.</small>
                                 </div> --}}
-                                <form>
+                                <form method="POST" action="{{ route('application.store') }}" method="POST">
+                                    @csrf
+                                    <input type="hidden" name="enquiry_id" value="{{ $enquiry->id }}">
                                     <div class="row">
                                         <div class="mb-1 col-md-6">
                                             <label class="form-label" for="username">Enrollment Date *</label>
-                                            <input type="date" name="enrollment_date"  class="form-control" placeholder="johndoe" value="{{ date('Y-m-d') }}"/>
+                                            @php 
+                                                if(isset($application_form->enrollment_date)){
+                                                    $enrollment_date = $application_form->enrollment_date;
+                                                }elseif (!empty(old('enrollment_date'))) {
+                                                    $enrollment_date = old('enrollment_date');
+                                                }else {
+                                                    $enrollment_date = date('Y-m-d');
+                                                }
+                                            @endphp
+                                            <input type="date" name="enrollment_date"  class="form-control"  value="{{ $enrollment_date }}"/>
                                         </div>
 
                                         <div class="border-top mb-1"></div>
@@ -115,8 +126,8 @@
                                         </div>
 
                                         <div class="col-md-6 mb-1">
-                                            <label class="form-label" for="username">Profile Photo </label>
-                                            <input type="file" name="customer_image"  class="form-control" placeholder="johndoe" value="{{ date('Y-m-d') }}"/>
+                                            <label class="form-label" for="customer_image">Profile Photo <span class="error">*</span> </label>
+                                            <input type="file" id="customer_image" name="customer_image"  class="form-control"  value=""/>
                                         </div>
 
                                         <div class="col-md-6"></div>
@@ -126,16 +137,16 @@
                                                 <label class="form-label" for="first-name-column">Title <span class="error">*</span></label>
                                                 <div class="row">
                                                     <div class="col-md-2">
-                                                        <input type="radio" id="" name="customer_title" value="Md" {{ (old('customer_title') == 'MD' ? "checked":"") }}> <span>Md.</span>
+                                                        <input type="radio"  name="customer_title" value="Md" {{ (!empty($customer->title) && $customer->title == 'Md') ? 'checked' : '' }} > <span>Md.</span>
                                                     </div>
                                                     <div class="col-md-2">
-                                                        <input type="radio" checked id="single" name="customer_title" value="Mr"{{ (old('customer_title') == 'single' ? "Mr":"") }} > <span>Mr.</span> 
+                                                        <input type="radio" @empty($customer->title) @checked(true) @endempty name="customer_title" value="Mr" {{ (!empty($customer->title) && $customer->title == 'Mr') ? 'checked' : '' }} > <span>Mr.</span>
                                                     </div>
                                                     <div class="col-md-2">
-                                                        <input type="radio" id="widowed" name="customer_title" value="Ms" {{ (old('customer_title') == 'Ms' ? "checked":"") }}> <span>Ms.</span>
+                                                        <input type="radio"  name="customer_title" value="Ms" {{ (!empty($customer->title) && $customer->title == 'Ms') ? 'checked' : '' }}> <span>Ms.</span>
                                                     </div>
                                                     <div class="col-md-2">
-                                                        <input type="radio" id="divorced" name="customer_title" value="Mrs" {{ (old('customer_title') == 'Mrs' ? "checked":"") }} > <span>Mrs.</span>
+                                                        <input type="radio"  name="customer_title" value="Mrs"  {{ (!empty($customer->title) && $customer->title == 'Mrs') ? 'checked' : '' }}> <span>Mrs.</span>
                                                     </div>                                                        
                                                 </div> 
                                             </div> 
@@ -146,71 +157,71 @@
                                                 <label class="form-label" for="first-name-column">Gender <span class="error">*</span></label>
                                                 <div class="row">
                                                     <div class="col-md-2">
-                                                        <input type="radio" checked  name="customer_gender" value="Male" {{ (old('customer_gender') == 'Male' ? "checked":"") }}> <span>Male</span>
+                                                        <input type="radio" checked  name="customer_gender" value="Male" {{ (!empty($customer->gender) && $customer->gender == 'Male') ? 'checked' : '' }}> <span>Male</span>
                                                     </div>
                                                     <div class="col-md-2">
-                                                        <input type="radio"  name="customer_gender" value="Female"{{ (old('customer_gender') == 'Female' ? "checked":"") }} > <span>Female</span> 
+                                                        <input type="radio"  name="customer_gender" value="Female"  {{ (!empty($customer->gender) && $customer->gender == 'Female') ? 'checked' : '' }}> <span>Female</span> 
                                                     </div>
                                                     <div class="col-md-2">
-                                                        <input type="radio"  name="customer_gender" value="Other" {{ (old('customer_gender') == 'Other' ? "checked":"") }}> <span>Other</span>
+                                                        <input type="radio"  name="customer_gender" value="Other" {{ (!empty($customer->gender) && $customer->gender == 'Other') ? 'checked' : '' }}> <span>Other</span>
                                                     </div>
                                                 </div> 
                                             </div> 
                                         </div>
 
                                         <div class="col-md-6 mb-1">
-                                            <label class="form-label" for="username">First Name </label>
-                                            <input type="text" name="first_name"  class="form-control" placeholder="First Name" value="{{ old('first_name') }}"/>
+                                            <label class="form-label" for="username">First Name <span class="error">*</span></label>
+                                            <input type="text" name="first_name" required class="form-control" placeholder="First Name" value="@if(isset($customer->first_name)){{$customer->first_name}}@else{{ old('first_name')}}@endif"/>
                                         </div>
 
                                         <div class="col-md-6 mb-1">
-                                            <label class="form-label" for="username">Last Name </label>
-                                            <input type="text" name="last_name"  class="form-control" placeholder="Last Name" value="{{ old('last_name') }}"/>
+                                            <label class="form-label" for="username">Last Name <span class="error">*</span></label>
+                                            <input type="text" name="last_name" required  class="form-control" placeholder="Last Name" value="@if(isset($customer->last_name)){{$customer->last_name}}@else{{ old('last_name')}}@endif"/>
                                         </div>
 
                                         <div class="col-md-6 mb-1">
-                                            <label class="form-label" for="username">Mobile </label>
-                                            <input type="number" name="mobile"  class="form-control" placeholder="Mobile" value="{{ old('mobile') }}"/>
+                                            <label class="form-label" for="username">Mobile <span class="error">*</span></label>
+                                            <input type="number" name="mobile" required  class="form-control" placeholder="Mobile" value="@if(isset($customer->mobile)){{$customer->mobile}}@else{{ old('first_name')}}@endif"/>
                                         </div>
 
                                         <div class="col-md-6 mb-1">
                                             <label class="form-label" for="username">Dob </label>
-                                            <input type="date" name="dob"  class="form-control" placeholder="DOB" value="{{ old('dob') }}"/>
+                                            <input type="date" name="dob"  class="form-control" placeholder="DOB" value="@if(isset($customer->dob)){{$customer->dob}}@else{{ old('dob')}}@endif"/>
                                         </div>
 
                                         <div class="col-md-6 mb-1">
                                             <label class="form-label" for="username">Qualification  </label>
-                                            <input type="text" name="qualification"  class="form-control" placeholder="Qualification" value="{{ old('qualification') }}"/>
+                                            <input type="text" name="qualification"  class="form-control" placeholder="Qualification" value="@if(isset($customer->qualification)){{$customer->qualification}}@else{{ old('qualification')}}@endif"/>
                                         </div>
 
                                         <div class="col-md-6 mb-1">
                                             <label class="form-label" for="username">Occupation </label>
-                                            <input type="text" name="occupation"  class="form-control" placeholder="Occupation" value="{{ old('occupation') }}"/>
+                                            <input type="text" name="occupation"  class="form-control" placeholder="Occupation" value="@if(isset($customer->occupation)){{$customer->occupation}}@else{{ old('occupation')}}@endif"/>
                                         </div>
 
                                         <div class="col-md-6 mb-1">
                                             <label class="form-label" for="username">Old Customer No (if any) </label>
-                                            <input type="number" name="old_customer_mobile"  class="form-control" placeholder="Old Customer Number" value="{{ old('old_customer_mobile') }}"/>
+                                            <input type="number" name="old_customer_mobile"  class="form-control" placeholder="Old Customer Number" value="@if(isset($customer->reference_mobile)){{$customer->reference_mobile}}@else{{ old('old_customer_mobile')}}@endif"/>
                                         </div>
 
                                         <div class="col-md-6 mb-1">
                                             <label class="form-label" for="username">Father Name </label>
-                                            <input type="text" name="father_name"  class="form-control" placeholder="Father Name" value="{{ old('father_name') }}"/>
+                                            <input type="text" name="father_name"  class="form-control" placeholder="Father Name" value="@if(isset($customer->father_name)){{$customer->father_name}}@else{{ old('father_name')}}@endif"/>
                                         </div>
 
                                         <div class="col-md-6 mb-1">
                                             <label class="form-label" for="username">Mother Name </label>
-                                            <input type="text" name="mother_name"  class="form-control" placeholder="Mother Name" value="{{ old('mother_name') }}"/>
+                                            <input type="text" name="mother_name"  class="form-control" placeholder="Mother Name" value="@if(isset($customer->mother_name)){{$customer->mother_name}}@else{{ old('mother_name')}}@endif"/>
                                         </div>
 
                                         <div class="col-md-6 mb-1">
                                             <label class="form-label" for="username">Husband/ Wife Name</label>
-                                            <input type="text" name="spouse_name"  class="form-control" placeholder="Husband/ Wife Name" value="{{ old('spouse_name') }}"/>
+                                            <input type="text" name="spouse_name"  class="form-control" placeholder="Husband/ Wife Name" value="@if(isset($customer->spouse_name)){{$customer->spouse_name}}@else{{ old('spouse_name')}}@endif"/>
                                         </div>
 
                                         <div class="col-md-6 mb-1">
                                             <label class="form-label" for="username">Alternative Mobile No</label>
-                                            <input type="text" name="alternative_mobile"  class="form-control" placeholder="Alternative Mobile No" value="{{ old('alternative_mobile') }}"/>
+                                            <input type="text" name="alternative_mobile"  class="form-control" placeholder="Alternative Mobile No" value="@if(isset($customer->alternative_mobile)){{$customer->alternative_mobile}}@else{{ old('alternative_mobile')}}@endif"/>
                                         </div>
 
                                         <div class="col-md-6 mb-1">
@@ -218,14 +229,14 @@
                                             <select class="select2 form-select" name="marital_status" id="marital_status"  required >
                                                 <option value="">Select Marital Status</option>
                                                 @foreach (config('constant.marital_status') as $key => $value)
-                                                    <option value="{{ $key }}">{{ $value }}</option>
+                                                    <option value="{{ $key }}" {{ (isset($customer->marital_status) && $customer->marital_status == $key) ? 'selected' : '' }}>{{ $value }}</option>
                                                 @endforeach
                                             </select>
                                         </div>
 
                                         <div class="col-md-6 mb-1">
                                             <label class="form-label" for="username">Email</label>
-                                            <input type="email" name="email"  class="form-control" placeholder="Email" value="{{ old('email') }}"/>
+                                            <input type="email" name="email"  class="form-control" placeholder="Email" value="@if(isset($customer->email)){{$customer->email}}@else{{ old('email')}}@endif"/>
                                         </div>
 
                                         <div class="border-top mb-1"></div>
@@ -235,21 +246,32 @@
 
                                         <div class="col-md-6 mb-1">
                                             <label class="form-label" for="username">Processing Fee</label>
-                                            <input type="number" name="processing_fee"  class="form-control" placeholder="Processing Fee" value=""/>
+                                            <input type="number" required name="processing_fees"  class="form-control" placeholder="Processing Fee" value="@if(isset($application_form->processing_fees)){{$application_form->processing_fees}}@else{{ old('processing_fees')}}@endif"/>
                                         </div>
 
                                         <div class="col-md-6 mb-1">
+
+                                            @php
+                                                if(!empty($application->payment_mode)){
+                                                    $payment_mode = $application->payment_mode;
+                                                }elseif (!empty(old('payment_mode'))) {
+                                                    $payment_mode = old('payment_mode');
+                                                }else {
+                                                    $payment_mode = 'cash';
+                                                }
+                                            @endphp
+
                                             <div class="form-group">
                                                 <label class="form-label" for="first-name-column">Pay Mode<span class="error">*</span></label>
                                                 <div class="row">
                                                     <div class="col-md-3">
-                                                        <input type="radio" id="" name="pay_mode" value="cash" {{ (old('pay_mode') == 'cash' ? "checked":"") }}> <span>Cash</span>
+                                                        <input type="radio" id="" name="payment_mode" value="cash" {{ ($payment_mode == 'cash' ? "checked":"") }} > <span>Cash</span>
                                                     </div>
                                                     <div class="col-md-3">
-                                                        <input type="radio" id="single" name="pay_mode" value="cheque"{{ (old('pay_mode') == 'cheque' ? "checked":"") }} > <span>Cheque</span> 
+                                                        <input type="radio" id="single" name="payment_mode" value="cheque" {{ ($payment_mode == 'cheque' ? "checked":"") }} > <span>Cheque</span> 
                                                     </div>
                                                     <div class="col-md-3">
-                                                        <input type="radio" id="widowed" name="pay_mode" value="online" {{ (old('pay_mode') == 'online' ? "checked":"") }}> <span>Online Tr.
+                                                        <input type="radio" id="widowed" name="payment_mode" value="online" {{ ($payment_mode == 'online' ? "checked":"") }} > <span>Online Tr.
                                                         </span>
                                                     </div>
                                                 </div> 
@@ -263,37 +285,37 @@
 
                                         <div class="col-md-6 mb-1">
                                             <label class="form-label" for="username">Address Line 1</label>
-                                            <textarea name="postal_address_1" class="form-control" id="" cols="2" rows="2" placeholder="Address Line 1"></textarea>
+                                            <textarea name="postal_address_1" required class="form-control" id="" cols="2" rows="2" placeholder="Address Line 1">@if(isset($postal_address->address)){{$postal_address->address}}@else{{ $enquiry->address }}@endif</textarea>
                                         </div>
 
                                         <div class="col-md-6 mb-1">
                                             <label class="form-label" for="username">Address Line 2</label>
-                                            <textarea name="postal_address_2" class="form-control" id="" cols="2" rows="2" placeholder="Address Line 2"></textarea>
+                                            <textarea name="postal_address_2" required class="form-control" id="" cols="2" rows="2" placeholder="Address Line 2">@if(isset($postal_address->address)){{$postal_address->address}}@else{{ $enquiry->address_2 }}@endif</textarea>
                                         </div>
 
                                         <div class="col-md-6 mb-1">
                                             <label class="form-label" for="username">Area </label>
-                                            <input type="text" name="postal_area"  class="form-control" placeholder="Area" value=""/>
+                                            <input type="text" name="postal_area"  required class="form-control" placeholder="Area" value=""/>
                                         </div>
 
                                         <div class="col-md-6 mb-1">
                                             <label class="form-label" for="username">Landmark </label>
-                                            <input type="text" name="postal_land_mark"  class="form-control" placeholder="Land Mark" value=""/>
+                                            <input type="text" name="postal_land_mark" required  class="form-control" placeholder="Land Mark" value=""/>
                                         </div>
 
                                         <div class="col-md-6 mb-1">
                                             <label class="form-label" for="username">City </label>
-                                            <input type="text" name="postal_city"  class="form-control" placeholder="City" value=""/>
+                                            <input type="text" name="postal_city" required  class="form-control" placeholder="City" value=""/>
                                         </div>
 
                                         <div class="col-md-6 mb-1">
                                             <label class="form-label" for="username">District </label>
-                                            <input type="text" name="postal_district"  class="form-control" placeholder="District" value=""/>
+                                            <input type="text" name="postal_district" required  class="form-control" placeholder="District" value=""/>
                                         </div>
 
                                         <div class="col-md-6 mb-1">
                                             <label class="form-label" for="username">State </label>
-                                            <select class="select2 form-select" name="postal_state" id="postal_state"  >
+                                            <select class="select2 form-select" required name="postal_state" id="postal_state"  >
                                                 <option value="">Select State</option>
                                                 @foreach (config('constant.states') as $key => $value)
                                                     <option value="{{ $value }}">{{ $value }}</option>
@@ -303,12 +325,12 @@
 
                                         <div class="col-md-3 mb-1">
                                             <label class="form-label" for="username">Pin Code </label>
-                                            <input type="number" name="postal_pin"  class="form-control" placeholder="Pin Code" value=""/>
+                                            <input type="number" name="postal_pin" required class="form-control" placeholder="Pin Code" value=""/>
                                         </div>
 
                                         <div class="col-md-3 mb-1">
                                             <label class="form-label" for="username">Country </label>
-                                            <input type="text" name="postal_country"  class="form-control" placeholder="Countary" readonly value="INDIA"/>
+                                            <input type="text" name="postal_country" required  class="form-control" placeholder="Countary" readonly value="INDIA"/>
                                         </div>
 
                                         <div class="border-top mb-1"></div>
@@ -554,7 +576,7 @@
                                         <div class="col-md-3 mb-1">
                                             <label class="form-label" for="username">State</label>
 
-                                            <select class="select2 form-select" name="transaction_id" required id="stateOFCustomerDetail"  >
+                                            <select class="select2 form-select" name="transaction_id" id="stateOFCustomerDetail"  >
                                                 <option value="">Select State</option>
                                                 @foreach (config('constant.states') as $key => $value)
                                                     <option value="{{ $value }}">{{ $value }}</option>
@@ -565,12 +587,12 @@
 
                                         <div class="col-md-3 mb-1">
                                             <label class="form-label" for="username">Pin </label>
-                                            <input type="text" name="emp_pin" required  class="form-control" placeholder="PIN" value="{{ old('emp_pin') }}"/>
+                                            <input type="text" name="emp_pin"   class="form-control" placeholder="PIN" value="{{ old('emp_pin') }}"/>
                                         </div>
 
                                         <div class="col-md-6 mb-1">
                                             <label class="form-label" for="username">Office Address *</label>
-                                            <input type="text" name="emp_office_address" required class="form-control" placeholder="Office Address" value="{{ old('emp_office_address') }}"/>
+                                            <input type="text" name="emp_office_address" class="form-control" placeholder="Office Address" value="{{ old('emp_office_address') }}"/>
                                         </div>
 
                                         <div class="border-top mb-1"></div>
@@ -580,17 +602,17 @@
 
                                         <div class="col-md-6 mb-1">
                                             <label class="form-label" for="username">Loan Amount </label>
-                                            <input type="text" name="loan_amount"  class="form-control" required placeholder="Loan Amount" value="{{ old('loan_amount') }}"/>
+                                            <input type="text" name="loan_amount"  class="form-control" required placeholder="Loan Amount" value="@if(isset($application_form->loan_amount)){{$application_form->loan_amount}}@else{{ old('loan_amount') }}@endif"/>
                                         </div>
 
                                         <div class="col-md-6 mb-1">
                                             <label class="form-label" for="username">Rate Of Intrest </label>
-                                            <input type="number" name="rate_of_interest"  class="form-control" required placeholder="Rate Of Intrest" value="{{ old('rate_of_interest') }}"/>
+                                            <input type="number" name="rate_of_interest"  class="form-control" required placeholder="Rate Of Intrest" value="@if(isset($application_form->rate_of_interest)){{$application_form->rate_of_interest}}@else{{ old('rate_of_interest') }}@endif"/>
                                         </div>
 
                                         <div class="col-md-6 mb-1">
                                             <label class="form-label" for="username">Tenure </label>
-                                            <input type="text" name="tenure"  class="form-control" placeholder="Tenure" value="{{ old('tenure') }}"/>
+                                            <input type="text" name="tenure"  class="form-control" placeholder="Tenure" value="@if(isset($application_form->tenure)){{$application_form->tenure}}@else{{ old('tenure') }}@endif"/>
                                         </div>
 
                                         <div class="col-md-6 mb-1">
@@ -598,39 +620,41 @@
                                             <select class="select2 form-select" name="loan_type" id="loan_type" required >
                                                 <option value="">Select State</option>
                                                 @foreach (config('constant.loan_type') as $key => $value)
-                                                    <option value="{{ $key }}">{{ $value }}</option>
+                                                    <option value="{{ $key }}"  {{ (isset($application_form->loan_type) && $application_form->loan_type == $key) ? 'selected' : '' }} >{{ $value }}</option>
                                                 @endforeach
                                             </select>
                                         </div>
 
                                         <div class="col-md-6 mb-1">
                                             <label class="form-label" for="username">Application date</label>
-                                            <input type="date" name="application_date"  class="form-control" required placeholder="Application Date" value="{{ old('application_date') }}"/>
+                                            <input type="date" name="application_date"  class="form-control" required placeholder="Application Date" value="@if(isset($application_form->application_date)){{$application_form->application_date}}@else{{ old('application_date') }}@endif"/>
                                         </div>
 
                                         <div class="col-md-3 mb-1">
                                             <label class="form-label" for="username">Additional Charges </label>
-                                            <input type="text" name="additional_charge"  class="form-control" required placeholder="Additional Charges" value="{{ old('additional_charge') }}"/>
+                                            <input type="text" name="additional_charge"  class="form-control" required placeholder="Additional Charges" value="@if(isset($application_form->additional_charge)){{$application_form->additional_charge}}@else{{ old('additional_charge')}}@endif"/>
                                         </div>
 
                                         <div class="col-md-3 mb-1">
                                             <label class="form-label" for="username">Emi Amount</label>
-                                            <input type="text" name="emi_amount"  class="form-control" required placeholder="Emi Amount" value="{{ old('emi_amount') }}"/>
+                                            <input type="text" name="emi_amount"  class="form-control" required placeholder="Emi Amount" value="@if(isset($application_form->emi_amount)){{$application_form->emi_amount}}@else{{ old('emi_amount') }}@endif"/>
                                         </div>
 
                                     </div>
+
+                                    <div class="d-flex justify-content-between">
+                                        <button class="btn btn-outline-secondary btn-prev" disabled>
+                                            <i data-feather="arrow-left" class="align-middle me-sm-25 me-0"></i>
+                                            <span class="align-middle d-sm-inline-block d-none">Previous</span>
+                                        </button>
+                                        <button class="btn btn-primary btn-next" type="submit">
+                                            <span class="align-middle d-sm-inline-block d-none">Next</span>
+                                            <i data-feather="arrow-right" class="align-middle ms-sm-25 ms-0"></i>
+                                        </button>
+                                    </div>
                                     
                                 </form>
-                                <div class="d-flex justify-content-between">
-                                    <button class="btn btn-outline-secondary btn-prev" disabled>
-                                        <i data-feather="arrow-left" class="align-middle me-sm-25 me-0"></i>
-                                        <span class="align-middle d-sm-inline-block d-none">Previous</span>
-                                    </button>
-                                    <button class="btn btn-primary btn-next">
-                                        <span class="align-middle d-sm-inline-block d-none">Next</span>
-                                        <i data-feather="arrow-right" class="align-middle ms-sm-25 ms-0"></i>
-                                    </button>
-                                </div>
+                                
                             </div>
                            
                         </div>

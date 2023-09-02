@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ApplicationFormController;
 use App\Http\Controllers\EnquiryController;
 use App\Http\Controllers\LoginController;
 use Illuminate\Support\Facades\Route;
@@ -21,10 +22,9 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/', [LoginController::class,'dashboard'])->name('dashboard');
     Route::get('logout',[LoginController::class,'logout'])->name('admin.logout');
     Route::resource('enquires',EnquiryController::class);
-    
-    Route::get('application/{id}',function(){
-        return view('application-forms.create');
-    })->name('application-form');
+    Route::resource('application',ApplicationFormController::class);
+    Route::get('application-form/{id}',[ApplicationFormController::class,'create'])->name('application-form');
+
 });
 
 Route::get('login',[LoginController::class,'index'])->name('login');
