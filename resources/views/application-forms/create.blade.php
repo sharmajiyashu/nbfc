@@ -527,13 +527,13 @@
 
                                         <div class="col-md-3 mb-1">
                                             <label class="form-label" for="username">Property Papers </label>
-                                            <input type="text" name="property_paper_number"  class="form-control" placeholder="Property Papers" value="{{ old('property_paper_number') }}"/>
+                                            <input type="text" name="property_paper_number"  class="form-control" placeholder="Property Papers" value="{{ isset($kyc_detail['property_type']['number']) ? $kyc_detail['property_type']['number'] :'' }}"/>
                                         </div>
 
                                         <div class="col-md-3 mb-1">
                                             <label class="form-label" for="username">Property Papers  Doc </label>
                                             <div class="mb-1">
-                                                <img src="{{ asset('public/images/documents/'.($kyc_detail['ration_card']['image'] ?? '')) }}" alt="" width="100">
+                                                <img src="{{ asset('public/images/documents/'.($kyc_detail['property_type']['image'] ?? '')) }}" alt="" width="100">
                                             </div>
                                             <input type="file" name="property_paper_doc"  class="form-control" placeholder="johndoe" value=""/>
                                         </div>

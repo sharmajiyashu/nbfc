@@ -33,6 +33,8 @@ class Helper
                 'image' => optional($document)->image ?? '',
             ];
         }
+
+        // print_r($result);die;
         
         return $result;
     }

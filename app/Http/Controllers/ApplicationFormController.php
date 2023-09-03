@@ -115,13 +115,31 @@ class ApplicationFormController extends Controller
             'district' => $request->permanant_district,
             'country' => $request->permanant_pin,
         ]);
-        self::uplodeKyc($customer->id,$request->only('aadhar_number','aadhar_doc','voter_id','voter_doc','pan_number','pan_doc','ration_card_number','ration_card_doc','dl_number','dl_doc','bank_statement_number','bank_statement_doc','property_paper_number','other_document_name'));
+        self::uplodeKyc($customer->id,$request->only('aadhar_number','aadhar_doc','voter_id','voter_doc','pan_number','pan_doc',
+        'ration_card_number','ration_card_doc','dl_number','dl_doc','bank_statement_number','bank_statement_doc','property_paper_number',
+        'other_document_name','other_document_doc','property_paper_doc'));
         return redirect()->back()->with('success','Save Update success');
     }
 
     function uplodeKyc($customer_id,$data){
+        if(!empty($data['other_document_name'])){
+            $other_document_doc = Helper::uploadDocument(isset($data['other_document_doc']) ? $data['other_document_doc'] : null);
+            $dd_data = [
+                'customer_id' => $customer_id,
+                'type' => Document::$other,
+                'name' => 'Other Document',
+                'desc' => isset($data['other_document_name']),
+            ];
+            if($other_document_doc){
+                $dd_data['image'] = $other_document_doc;
+            }
+            $document = Document::updateOrCreate(['customer_id' => $customer_id ,'type' => Document::$other],$dd_data);
+        }
+
+        
 
         if(!empty($data['property_paper_number'])){
+            
             $property_paper_doc = Helper::uploadDocument(isset($data['property_paper_doc']) ? $data['property_paper_doc'] : null);
             $dd_data = [
                 'customer_id' => $customer_id,
@@ -135,6 +153,7 @@ class ApplicationFormController extends Controller
             $document = Document::updateOrCreate(['customer_id' => $customer_id ,'type' => Document::$property_type],$dd_data);
         }
 
+        
         if(!empty($data['bank_statement_number'])){
             $bank_statement_doc = Helper::uploadDocument(isset($data['bank_statement_doc']) ? $data['bank_statement_doc'] : null);
             $dd_data = [
