@@ -1,5 +1,5 @@
 <!-- BEGIN: Vendor JS-->
-<script src="{{ asset('public/admin/app-assets/vendors/js/vendors.min.js')}}"></script>
+{{-- <script src="{{ asset('public/admin/app-assets/vendors/js/vendors.min.js')}}"></script> --}}
 <!-- BEGIN Vendor JS-->
 
 <!-- BEGIN: Page Vendor JS-->
@@ -29,8 +29,8 @@
 <!-- END: Page Vendor JS-->
 
 <!-- BEGIN: Theme JS-->
-{{-- <script src="{{ asset('public/admin/app-assets/js/core/app-menu.js')}}"></script> --}}
-{{-- <script src="{{ asset('public/admin/app-assets/js/core/app.js')}}"></script> --}}
+<script src="{{ asset('public/admin/app-assets/js/core/app-menu.js')}}"></script>
+<script src="{{ asset('public/admin/app-assets/js/core/app.js')}}"></script>
 <!-- END: Page JS-->
 
 <script>
@@ -105,28 +105,3 @@ $(document).ready( function() {
 <script src="{{ asset('public/admin/app-assets/js/scripts/forms/form-select2.js')}}"></script>
 
 @stack('scripts')
-
-
-
-<script>
-    $(document).ready(function() {
-        // $("#family_details").hide();
-        $("input[name='marital_status']").change(function () {
-            if ($(this).val() == "married") {
-            $("#family_details").show();
-            } else {
-            $("#family_details").hide();
-            }
-        });
-
-        const radioBtn = document.getElementById('marital_status_checked_married_option');
-        if (radioBtn.checked) {
-            // Display the radio button value
-            $("#family_details").show();
-        }
-
-
-    });
-
-
-</script>

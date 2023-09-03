@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\Helper;
+use App\Http\Requests\StoreEnquiryRequest;
 use App\Models\Document;
 use App\Models\Enquiry;
 use Illuminate\Http\Request;
@@ -35,44 +37,30 @@ class EnquiryController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(StoreEnquiryRequest $request)
     {
-        $validated = $request->validate([
-            'first_name' => 'required|max:255',
-            'last_name' => 'required|max:255',
-            'mobile' => 'required|digits:10|numeric',
-            'address' => 'required',
-            'address_2' => 'required',
-            'city' => 'required|max:20',
-            'pin_code' => 'required|max:10',
-            'login_charge' => 'required|numeric',
-            'aadhar_number' => 'nullable|max:16',
-            'voder_id' => 'nullable|max:15',
-            'pan_number' => 'nullable|max:10',
-            'other_document' => 'nullable|max:20',
-            'pay_mode' => 'required'
-        ]);
-
+        $validated = $request->validated();
         $validated['enquiry_id'] = self::GenerateId();
 
         $enquiry = Enquiry::create($validated);
+
         if(!empty($request->aadhar_number)){
             Document::create([
                 'enquiry_id' => $enquiry->id,
                 'type' => Document::$aadhar,
                 'name' => 'Aadhar Number',
                 'desc' => $request->aadhar_number,
-                'image' => ''
+                'image' => Helper::uploadDocument($request->aadhar_doc),
             ]);
         }
 
         if(!empty($request->voder_id)){
             Document::create([
                 'enquiry_id' => $enquiry->id,
-                'type' => Document::$voder_id,
+                'type' => Document::$voter_id,
                 'name' => 'Voter Id',
                 'desc' => $request->voder_id,
-                'image' => ''
+                'image' => Helper::uploadDocument($request->voder_doc),
             ]);
         }
 
@@ -82,7 +70,7 @@ class EnquiryController extends Controller
                 'type' => Document::$pan,
                 'name' => 'Pan Number',
                 'desc' => $request->pan_number,
-                'image' => ''
+                'image' => Helper::uploadDocument($request->pan_doc),
             ]);
         }
 
@@ -92,7 +80,7 @@ class EnquiryController extends Controller
                 'type' => Document::$other,
                 'name' => 'Other Document',
                 'desc' => $request->other_document,
-                'image' => ''
+                'image' => Helper::uploadDocument($request->other_doc),
             ]);
         }
 

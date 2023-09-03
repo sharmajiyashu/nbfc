@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Helpers\Helper;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -15,19 +16,8 @@ class ApplicationForm extends Model
     {
         parent::boot();
         static::creating (function ($model) {
-            // $model->slug = str_slug($model->title);
-            $model->application_id = self::GenerateId();
+            $model->application_id = Helper::generateApplicationId();
         });
-    }
-
-
-    function GenerateId(){
-        $store_code = 'APP'.mt_rand(10000000, 99999999);
-        if(ApplicationForm::where('application_id',$store_code)->first()){
-            $this->GenerateId();
-        }else{
-            return $store_code;
-        }
     }
     
 }

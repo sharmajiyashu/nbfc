@@ -28,12 +28,14 @@
                 <div class="content-header-left col-md-9 col-12 mb-2">
                     <div class="row breadcrumbs-top">
                         <div class="col-12">
-                            <h2 class="content-header-title float-start mb-0">Customer Enquiry</h2>
+                            <h2 class="content-header-title float-start mb-0">Aaplication Form</h2>
                             <div class="breadcrumb-wrapper">
                                 <ol class="breadcrumb">
                                     <li class="breadcrumb-item"><a href="{{  route('dashboard') }}">Home</a>
                                     </li>
                                     <li class="breadcrumb-item"><a href="{{ route('enquires.index') }}">Enquires</a>
+                                    </li>
+                                    <li class="breadcrumb-item"><a href="{{ route('enquires.index') }}">{{ $enquiry->enquiry_id }}</a>
                                     </li>
                                     <li class="breadcrumb-item active">Add
                                     </li>
@@ -101,7 +103,7 @@
                                     <h5 class="mb-0">Customer Details</h5>
                                     <small class="text-muted">Enter Your Account Details.</small>
                                 </div> --}}
-                                <form method="POST" action="{{ route('application.store') }}" method="POST">
+                                <form method="POST" action="{{ route('application.store') }}" method="POST" enctype="multipart/form-data" >
                                     @csrf
                                     <input type="hidden" name="enquiry_id" value="{{ $enquiry->id }}">
                                     <div class="row">
@@ -171,22 +173,22 @@
 
                                         <div class="col-md-6 mb-1">
                                             <label class="form-label" for="username">First Name <span class="error">*</span></label>
-                                            <input type="text" name="first_name" required class="form-control" placeholder="First Name" value="@if(isset($customer->first_name)){{$customer->first_name}}@else{{ old('first_name')}}@endif"/>
+                                            <input type="text" name="first_name" required class="form-control" placeholder="First Name" value="@if(isset($customer->first_name)){{$customer->first_name}}@else {{ isset($enquiry->first_name) ? $enquiry->first_name :''}}  @endif"/>
                                         </div>
 
                                         <div class="col-md-6 mb-1">
                                             <label class="form-label" for="username">Last Name <span class="error">*</span></label>
-                                            <input type="text" name="last_name" required  class="form-control" placeholder="Last Name" value="@if(isset($customer->last_name)){{$customer->last_name}}@else{{ old('last_name')}}@endif"/>
+                                            <input type="text" name="last_name" required  class="form-control" placeholder="Last Name" value="@if(isset($customer->last_name)){{$customer->last_name}}@else{{ isset($enquiry->last_name) ? $enquiry->last_name :''}}@endif"/>
                                         </div>
 
                                         <div class="col-md-6 mb-1">
                                             <label class="form-label" for="username">Mobile <span class="error">*</span></label>
-                                            <input type="number" name="mobile" required  class="form-control" placeholder="Mobile" value="@if(isset($customer->mobile)){{$customer->mobile}}@else{{ old('first_name')}}@endif"/>
+                                            <input type="number" name="mobile" required  class="form-control" placeholder="Mobile" value="@if(isset($customer->mobile)){{$customer->mobile}}@else{{ isset($enquiry->mobile) ? $enquiry->mobile :''}}@endif"/>
                                         </div>
 
                                         <div class="col-md-6 mb-1">
                                             <label class="form-label" for="username">Dob </label>
-                                            <input type="date" name="dob"  class="form-control" placeholder="DOB" value="@if(isset($customer->dob)){{$customer->dob}}@else{{ old('dob')}}@endif"/>
+                                            <input type="date" name="dob"  class="form-control" placeholder="DOB" value="@if(isset($customer->dob)){{$customer->dob}}@else{{ isset($enquiry->dob) ? $enquiry->dob :''}}@endif"/>
                                         </div>
 
                                         <div class="col-md-6 mb-1">
@@ -290,27 +292,27 @@
 
                                         <div class="col-md-6 mb-1">
                                             <label class="form-label" for="username">Address Line 2</label>
-                                            <textarea name="postal_address_2" required class="form-control" id="" cols="2" rows="2" placeholder="Address Line 2">@if(isset($postal_address->address)){{$postal_address->address}}@else{{ $enquiry->address_2 }}@endif</textarea>
+                                            <textarea name="postal_address_2" required class="form-control" id="" cols="2" rows="2" placeholder="Address Line 2">@if(isset($postal_address->address_2)){{$postal_address->address_2}}@else{{ $enquiry->address_2 }}@endif</textarea>
                                         </div>
 
                                         <div class="col-md-6 mb-1">
                                             <label class="form-label" for="username">Area </label>
-                                            <input type="text" name="postal_area"  required class="form-control" placeholder="Area" value=""/>
+                                            <input type="text" name="postal_area"  required class="form-control" placeholder="Area" value="@if(isset($postal_address->area)){{$postal_address->area}}@else{{ old('postal_area') }}@endif"/>
                                         </div>
 
                                         <div class="col-md-6 mb-1">
                                             <label class="form-label" for="username">Landmark </label>
-                                            <input type="text" name="postal_land_mark" required  class="form-control" placeholder="Land Mark" value=""/>
+                                            <input type="text" name="postal_land_mark" required  class="form-control" placeholder="Land Mark" value="@if(isset($postal_address->land_mark)){{$postal_address->land_mark}}@else{{ old('postal_land_mark') }}@endif"/>
                                         </div>
 
                                         <div class="col-md-6 mb-1">
                                             <label class="form-label" for="username">City </label>
-                                            <input type="text" name="postal_city" required  class="form-control" placeholder="City" value=""/>
+                                            <input type="text" name="postal_city" required  class="form-control" placeholder="City" value="@if(isset($postal_address->city)){{$postal_address->city}}@else {{ isset($enquiry->city) ? $enquiry->city :''}} @endif"/>
                                         </div>
 
                                         <div class="col-md-6 mb-1">
                                             <label class="form-label" for="username">District </label>
-                                            <input type="text" name="postal_district" required  class="form-control" placeholder="District" value=""/>
+                                            <input type="text" name="postal_district" required  class="form-control" placeholder="District" value="@if(isset($postal_address->district)){{$postal_address->district}}@else{{ old('postal_district') }}@endif"/>
                                         </div>
 
                                         <div class="col-md-6 mb-1">
@@ -318,14 +320,14 @@
                                             <select class="select2 form-select" required name="postal_state" id="postal_state"  >
                                                 <option value="">Select State</option>
                                                 @foreach (config('constant.states') as $key => $value)
-                                                    <option value="{{ $value }}">{{ $value }}</option>
+                                                    <option value="{{ $value }}" {{ (!empty($postal_address->state) && $postal_address->state == $value) ? 'selected' : '' }}>{{ $value }}</option>
                                                 @endforeach
                                             </select>
                                         </div>
 
                                         <div class="col-md-3 mb-1">
                                             <label class="form-label" for="username">Pin Code </label>
-                                            <input type="number" name="postal_pin" required class="form-control" placeholder="Pin Code" value=""/>
+                                            <input type="number" name="postal_pin" required class="form-control" placeholder="Pin Code" value="@if(isset($postal_address->pincode)){{$postal_address->pincode}}@else{{ old('postal_pin') }}@endif"/>
                                         </div>
 
                                         <div class="col-md-3 mb-1">
@@ -340,52 +342,52 @@
 
                                         <div class="col-md-6 mb-1">
                                             <label class="form-label" for="username">Address Line 1</label>
-                                            <textarea name="permanant_address_1" class="form-control" id="" cols="2" rows="2" placeholder="Address Line 1"></textarea>
+                                            <textarea name="permanant_address_1" required class="form-control" id="" cols="2" rows="2" placeholder="Address Line 1">@if(isset($permanent_address->address)){{$permanent_address->address}}@else{{ old('permanant_address_1') }}@endif</textarea>
                                         </div>
 
                                         <div class="col-md-6 mb-1">
                                             <label class="form-label" for="username">Address Line 2</label>
-                                            <textarea name="permanant_address_2" class="form-control" id="" cols="2" rows="2" placeholder="Address Line 2"></textarea>
+                                            <textarea name="permanant_address_2" required class="form-control" id="" cols="2" rows="2" placeholder="Address Line 2">@if(isset($permanent_address->address_2)){{$permanent_address->address_2}}@else{{ old('permanant_address_2') }}@endif</textarea>
                                         </div>
 
                                         <div class="col-md-6 mb-1">
                                             <label class="form-label" for="username">Area </label>
-                                            <input type="text" name="permanant_area"  class="form-control" placeholder="Area" value=""/>
+                                            <input type="text" name="permanant_area" required class="form-control" placeholder="Area" value="@if(isset($permanent_address->area)){{$permanent_address->area}}@else{{ old('permanant_area') }}@endif"/>
                                         </div>
 
                                         <div class="col-md-6 mb-1">
                                             <label class="form-label" for="username">Landmark </label>
-                                            <input type="text" name="permanant_land_mark"  class="form-control" placeholder="Land Mark" value=""/>
+                                            <input type="text" name="permanant_land_mark" required  class="form-control" placeholder="Land Mark" value="@if(isset($permanent_address->land_mark)){{$permanent_address->land_mark}}@else{{ old('permanant_land_mark') }}@endif"/>
                                         </div>
 
                                         <div class="col-md-6 mb-1">
                                             <label class="form-label" for="username">City </label>
-                                            <input type="text" name="permanant_city"  class="form-control" placeholder="City" value=""/>
+                                            <input type="text" name="permanant_city" required class="form-control" placeholder="City" value="@if(isset($permanent_address->city)){{$permanent_address->city}}@else{{ old('permanant_city') }}@endif"/>
                                         </div>
 
                                         <div class="col-md-6 mb-1">
                                             <label class="form-label" for="username">District </label>
-                                            <input type="text" name="permanant_district"  class="form-control" placeholder="District" value=""/>
+                                            <input type="text" name="permanant_district" required class="form-control" placeholder="District" value="@if(isset($permanent_address->district)){{$permanent_address->district}}@else{{ old('permanant_district') }}@endif"/>
                                         </div>
 
                                         <div class="col-md-6 mb-1">
                                             <label class="form-label" for="username">State </label>
-                                            <select class="select2 form-select" name="permanant_state" id="permanant_state"  >
+                                            <select class="select2 form-select" required name="permanant_state" id="permanant_state"  >
                                                 <option value="">Select State</option>
                                                 @foreach (config('constant.states') as $key => $value)
-                                                    <option value="{{ $value }}">{{ $value }}</option>
+                                                    <option value="{{ $value }}" {{ (!empty($permanent_address->state) && $permanent_address->state == $value) ? 'selected' : '' }}>{{ $value }}</option>
                                                 @endforeach
                                             </select>
                                         </div>
 
                                         <div class="col-md-3 mb-1">
                                             <label class="form-label" for="username">Pin Code </label>
-                                            <input type="number" name="permanant_pin"  class="form-control" placeholder="Pin Code" value=""/>
+                                            <input type="number" name="permanant_pin" required class="form-control" placeholder="Pin Code" value="@if(isset($permanent_address->pincode)){{$permanent_address->pincode}}@else{{ old('permanant_pin') }}@endif"/>
                                         </div>
 
                                         <div class="col-md-3 mb-1">
                                             <label class="form-label" for="username">Country </label>
-                                            <input type="text" name="permanant_country"  class="form-control" placeholder="Countary" readonly value="INDIA"/>
+                                            <input type="text" name="permanant_country" required class="form-control" placeholder="Countary" readonly value="INDIA"/>
                                         </div>
 
                                         <div class="border-top mb-1"></div>
@@ -395,41 +397,79 @@
 
                                         <div class="col-md-3 mb-1">
                                             <label class="form-label" for="username">Aadhar Number </label>
-                                            <input type="text" name="aadhar_number"  class="form-control" placeholder="Aadhar Number" value="{{ old('aadhar_number') }}"/>
+                                            <input type="text" name="aadhar_number"  class="form-control" placeholder="Aadhar Number" value="@if(isset($kyc->aadhar)){{$kyc->aadhar}}@else{{ isset($enquiry_document['aadhar']['number']) ? $enquiry_document['aadhar']['number'] :'' }}@endif"/>
                                         </div>
 
                                         <div class="col-md-3 mb-1">
                                             <label class="form-label" for="username">Aadhaar Doc </label>
+                                            @php
+                                                if (isset($kyc_detail['aadhar']['image'])) {
+                                                    $aadher_image = isset($kyc_detail['aadhar']['image']) ? $kyc_detail['aadhar']['image'] :'';
+                                                }else {
+                                                    $aadher_image = isset($enquiry_document['aadhar']['image']) ? $enquiry_document['aadhar']['image'] :'';
+                                                }
+
+                                            @endphp
+                                            <div class="mb-1">
+                                                <img src="{{ asset('public/images/documents/'.$aadher_image) }}" alt="" width="100">
+                                            </div>
+                                            
                                             <input type="file" name="aadhar_doc"  class="form-control"  value=""/>
                                         </div>
 
                                         <div class="col-md-3 mb-1">
                                             <label class="form-label" for="username">Voter ID No </label>
-                                            <input type="text" name="voter_id"  class="form-control" placeholder="Voter ID Number" value="{{ old('voter_id') }}"/>
+                                            <input type="text" name="voter_id"  class="form-control" placeholder="Voter ID Number" value="@if(isset($kyc->aadhar)){{$kyc->aadhar}}@else{{ isset($enquiry_document['voter_id']['number']) ? $enquiry_document['voter_id']['number'] :'' }}@endif"/>
                                         </div>
 
                                         <div class="col-md-3 mb-1">
                                             <label class="form-label" for="username">Voter ID Doc </label>
+                                            @php
+                                                if (isset($kyc_detail['voter_id']['image'])){
+                                                    $aadher_image = isset($kyc_detail['voter_id']['image']) ? $kyc_detail['voter_id']['image'] :'';
+                                                }else {
+                                                    $aadher_image = isset($enquiry_document['voter_id']['image']) ? $enquiry_document['voter_id']['image'] :'';
+                                                }
+                                            
+                                            @endphp
+                                            <div class="mb-1">
+                                                <img src="{{ asset('public/images/documents/'.$aadher_image) }}" alt="" width="100">
+                                            </div>
                                             <input type="file" name="voter_doc"  class="form-control" placeholder="" value=""/>
                                         </div>
 
                                         <div class="col-md-3 mb-1">
                                             <label class="form-label" for="username">Pan No. </label>
-                                            <input type="text" name="pan_number"  class="form-control" placeholder="Pan Number" value="{{ old('pan_number') }}"/>
+                                            <input type="text" name="pan_number"  class="form-control" placeholder="Pan Number" value="@if(isset($kyc->aadhar)){{$kyc->aadhar}}@else{{ isset($enquiry_document['pan']['number']) ? $enquiry_document['pan']['number'] :'' }}@endif"/>
                                         </div>
 
                                         <div class="col-md-3 mb-1">
                                             <label class="form-label" for="username">Pan Doc </label>
+                                            @php
+                                                if (isset($kyc_detail['pan']['image'])) {
+                                                    $aadher_image = isset($kyc_detail['pan']['image']) ? $kyc_detail['pan']['image'] :'';
+                                                }else {
+                                                    $aadher_image = isset($enquiry_document['pan']['image']) ? $enquiry_document['pan']['image'] :'';
+                                                }
+                                            
+                                            @endphp
+                                            <div class="mb-1">
+                                                <img src="{{ asset('public/images/documents/'.$aadher_image) }}" alt="" width="100">
+                                            </div>
                                             <input type="file" name="pan_doc"  class="form-control" placeholder="" value=""/>
                                         </div>
 
                                         <div class="col-md-3 mb-1">
                                             <label class="form-label" for="username">Ration Card No.</label>
-                                            <input type="text" name="ration_card_number"  class="form-control" placeholder="Ration Card Number" value="{{ old('ration_card_number') }}"/>
+                                            
+                                            <input type="text" name="ration_card_number"  class="form-control" placeholder="Ration Card Number" value=""/>
                                         </div>
 
                                         <div class="col-md-3 mb-1">
                                             <label class="form-label" for="username">Ration Card Doc </label>
+                                            <div class="mb-1">
+                                                <img src="{{ asset('public/images/documents/'.($kyc_detail['ration_card']['image'] ?? '')) }}" alt="" width="100">
+                                            </div>
                                             <input type="file" name="ration_card_doc"  class="form-control" placeholder="johndoe" value=""/>
                                         </div>
 
@@ -440,6 +480,9 @@
 
                                         <div class="col-md-3 mb-1">
                                             <label class="form-label" for="username">DL Doc </label>
+                                            <div class="mb-1">
+                                                <img src="{{ asset('public/images/documents/'.($kyc_detail['dl']['image'] ?? '')) }}" alt="" width="100">
+                                            </div>
                                             <input type="file" name="dl_doc"  class="form-control" placeholder="" value=""/>
                                         </div>
 
@@ -450,6 +493,9 @@
 
                                         <div class="col-md-3 mb-1">
                                             <label class="form-label" for="username">Bank Statement Doc </label>
+                                            <div class="mb-1">
+                                                <img src="{{ asset('public/images/documents/'.($kyc_detail['bank_statement']['image'] ?? '')) }}" alt="" width="100">
+                                            </div>
                                             <input type="file" name="bank_statement_doc"  class="form-control" placeholder="" value=""/>
                                         </div>
 
@@ -460,6 +506,9 @@
 
                                         <div class="col-md-3 mb-1">
                                             <label class="form-label" for="username">Cibil Score Doc </label>
+                                            <div class="mb-1">
+                                                <img src="{{ asset('public/images/documents/'.($kyc_detail['ration_card']['image'] ?? '')) }}" alt="" width="100">
+                                            </div>
                                             <input type="file" name="cibil_score_doc"  class="form-control" placeholder="" value=""/>
                                         </div>
 
@@ -470,7 +519,10 @@
 
                                         <div class="col-md-3 mb-1">
                                             <label class="form-label" for="username">Cheque  Doc </label>
-                                            <input type="file" name="usernamklhgjke"  class="form-control" placeholder="" value=""/>
+                                            <div class="mb-1">
+                                                <img src="{{ asset('public/images/documents/'.($kyc_detail['ration_card']['image'] ?? '')) }}" alt="" width="100">
+                                            </div>
+                                            <input type="file" name="cheque_doc"  class="form-control" placeholder="" value=""/>
                                         </div>
 
                                         <div class="col-md-3 mb-1">
@@ -480,16 +532,30 @@
 
                                         <div class="col-md-3 mb-1">
                                             <label class="form-label" for="username">Property Papers  Doc </label>
-                                            <input type="file" name="usernamklhgjke"  class="form-control" placeholder="johndoe" value=""/>
+                                            <div class="mb-1">
+                                                <img src="{{ asset('public/images/documents/'.($kyc_detail['ration_card']['image'] ?? '')) }}" alt="" width="100">
+                                            </div>
+                                            <input type="file" name="property_paper_doc"  class="form-control" placeholder="johndoe" value=""/>
                                         </div>
 
                                         <div class="col-md-3 mb-1">
                                             <label class="form-label" for="username">Other Document. </label>
-                                            <input type="text" name="other_document_name"  class="form-control" placeholder="Other Document" value="{{ old('other_document_name') }}"/>
+                                            <input type="text" name="other_document_name"  class="form-control" placeholder="Other Document" value="@if(isset($kyc->aadhar)){{$kyc->aadhar}}@else{{ isset($enquiry_document['other']['number']) ? $enquiry_document['other']['number'] :'' }}@endif"/>
                                         </div>
 
                                         <div class="col-md-3 mb-1">
                                             <label class="form-label" for="username">Other Document Doc </label>
+                                            @php
+                                                if (isset($kyc_detail['other']['image'])) {
+                                                    $aadher_image = isset($kyc_detail['other']['image']) ? $kyc_detail['other']['image'] :'';
+                                                }else {
+                                                    $aadher_image = isset($enquiry_document['other']['image']) ? $enquiry_document['other']['image'] :'';
+                                                }
+                                            
+                                            @endphp
+                                            <div class="mb-1">
+                                                <img src="{{ asset('public/images/documents/'.$aadher_image) }}" alt="" width="100">
+                                            </div>
                                             <input type="file" name="other_document_doc"  class="form-control" placeholder="johndoe" value=""/>
                                         </div>
 
