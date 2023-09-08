@@ -19,4 +19,6 @@ class Document extends Model
     static $dl = 'dl';
     static $bank_statement = 'bank_statement';
     static $property_type = 'property_type';
+    static $cibil_score = 'cibil_score';
+    static $cheque = 'cheque';
 }

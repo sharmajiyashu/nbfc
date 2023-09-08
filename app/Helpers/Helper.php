@@ -17,7 +17,9 @@ class Helper
             Document::$property_type,
             Document::$bank_statement,
             Document::$ration_card,
-            Document::$dl
+            Document::$dl,
+            Document::$cibil_score,
+            Document::$cheque,
         ]; 
         
         $result = [];

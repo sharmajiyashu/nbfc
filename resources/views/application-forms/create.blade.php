@@ -395,9 +395,9 @@
                                             <h2 class="head">Customer KYC </h2>
                                         </div>
 
-                                        <div class="col-md-3 mb-1">
+                                        <div class="col-md-6 mb-1">
                                             <label class="form-label" for="username">Aadhar Number </label>
-                                            <input type="text" name="aadhar_number"  class="form-control" placeholder="Aadhar Number" value="@if(isset($kyc->aadhar)){{$kyc->aadhar}}@else{{ isset($enquiry_document['aadhar']['number']) ? $enquiry_document['aadhar']['number'] :'' }}@endif"/>
+                                            <input type="text" name="aadhar_number"  class="form-control" placeholder="Aadhar Number" value="@if(isset($kyc_detail['aadhar']['number'])){{$kyc_detail['aadhar']['number']}}@else{{ isset($enquiry_document['aadhar']['number']) ? $enquiry_document['aadhar']['number'] :'' }}@endif"/>
                                         </div>
 
                                         <div class="col-md-3 mb-1">
@@ -410,20 +410,20 @@
                                                 }
 
                                             @endphp
-                                            <div class="mb-1">
-                                                <img src="{{ asset('public/images/documents/'.$aadher_image) }}" alt="" width="100">
-                                            </div>
-                                            
                                             <input type="file" name="aadhar_doc"  class="form-control"  value=""/>
                                         </div>
 
                                         <div class="col-md-3 mb-1">
+                                            <img src="{{ asset('public/images/documents/'.$aadher_image) }}" alt="" width="100" onclick="ShowBigImae(this)" >
+                                        </div>
+
+                                        <div class="col-md-6 mb-1">
                                             <label class="form-label" for="username">Voter ID No </label>
-                                            <input type="text" name="voter_id"  class="form-control" placeholder="Voter ID Number" value="@if(isset($kyc->aadhar)){{$kyc->aadhar}}@else{{ isset($enquiry_document['voter_id']['number']) ? $enquiry_document['voter_id']['number'] :'' }}@endif"/>
+                                            <input type="text" name="voter_id"  class="form-control" placeholder="Voter ID Number" value="@if(isset($kyc_detail['voter_id']['number'])){{$kyc_detail['voter_id']['number']}}@else{{ isset($enquiry_document['voter_id']['number']) ? $enquiry_document['voter_id']['number'] :'' }}@endif"/>
                                         </div>
 
                                         <div class="col-md-3 mb-1">
-                                            <label class="form-label" for="username">Voter ID Doc </label>
+                                            <label class="form-label" for="username">Voter Doc </label>
                                             @php
                                                 if (isset($kyc_detail['voter_id']['image'])){
                                                     $aadher_image = isset($kyc_detail['voter_id']['image']) ? $kyc_detail['voter_id']['image'] :'';
@@ -432,15 +432,16 @@
                                                 }
                                             
                                             @endphp
-                                            <div class="mb-1">
-                                                <img src="{{ asset('public/images/documents/'.$aadher_image) }}" alt="" width="100">
-                                            </div>
                                             <input type="file" name="voter_doc"  class="form-control" placeholder="" value=""/>
                                         </div>
 
                                         <div class="col-md-3 mb-1">
+                                            <img onclick="ShowBigImae(this)" src="{{ asset('public/images/documents/'.$aadher_image) }}" alt="" width="100" onclick="ShowBigImae(this)">
+                                        </div>
+
+                                        <div class="col-md-6 mb-1">
                                             <label class="form-label" for="username">Pan No. </label>
-                                            <input type="text" name="pan_number"  class="form-control" placeholder="Pan Number" value="@if(isset($kyc->aadhar)){{$kyc->aadhar}}@else{{ isset($enquiry_document['pan']['number']) ? $enquiry_document['pan']['number'] :'' }}@endif"/>
+                                            <input type="text" name="pan_number"  class="form-control" placeholder="Pan Number" value="@if(isset($kyc_detail['pan']['number'])){{$kyc_detail['pan']['number']}}@else{{ isset($enquiry_document['pan']['number']) ? $enquiry_document['pan']['number'] :'' }}@endif"/>
                                         </div>
 
                                         <div class="col-md-3 mb-1">
@@ -453,94 +454,106 @@
                                                 }
                                             
                                             @endphp
-                                            <div class="mb-1">
-                                                <img src="{{ asset('public/images/documents/'.$aadher_image) }}" alt="" width="100">
-                                            </div>
+                                            
                                             <input type="file" name="pan_doc"  class="form-control" placeholder="" value=""/>
                                         </div>
 
                                         <div class="col-md-3 mb-1">
+                                            <img onclick="ShowBigImae(this)" src="{{ asset('public/images/documents/'.$aadher_image) }}" alt="" width="100">
+                                        </div>
+
+                                        <div class="col-md-6 mb-1">
                                             <label class="form-label" for="username">Ration Card No.</label>
                                             
-                                            <input type="text" name="ration_card_number"  class="form-control" placeholder="Ration Card Number" value=""/>
+                                            <input type="text" name="ration_card_number"  class="form-control" placeholder="Ration Card Number" value="{{ $kyc_detail['ration_card']['number'] ?? '' }}"/>
                                         </div>
 
                                         <div class="col-md-3 mb-1">
                                             <label class="form-label" for="username">Ration Card Doc </label>
-                                            <div class="mb-1">
-                                                <img src="{{ asset('public/images/documents/'.($kyc_detail['ration_card']['image'] ?? '')) }}" alt="" width="100">
-                                            </div>
+                                            
                                             <input type="file" name="ration_card_doc"  class="form-control" placeholder="johndoe" value=""/>
                                         </div>
-
                                         <div class="col-md-3 mb-1">
+                                            <img onclick="ShowBigImae(this)" src="{{ asset('public/images/documents/'.($kyc_detail['ration_card']['image'] ?? '')) }}" alt="" width="100">
+                                        </div>
+
+                                        <div class="col-md-6 mb-1">
                                             <label class="form-label" for="username">DL No.</label>
-                                            <input type="text" name="dl_number"  class="form-control" placeholder="DL Number" value="{{ old('dl_number') }}"/>
+                                            <input type="text" name="dl_number"  class="form-control" placeholder="DL Number" value="{{ isset($kyc_detail['dl']['number']) ? $kyc_detail['dl']['number'] :'' }}"/>
                                         </div>
 
                                         <div class="col-md-3 mb-1">
                                             <label class="form-label" for="username">DL Doc </label>
-                                            <div class="mb-1">
-                                                <img src="{{ asset('public/images/documents/'.($kyc_detail['dl']['image'] ?? '')) }}" alt="" width="100">
-                                            </div>
+                                            
                                             <input type="file" name="dl_doc"  class="form-control" placeholder="" value=""/>
                                         </div>
 
                                         <div class="col-md-3 mb-1">
+                                            <img onclick="ShowBigImae(this)" src="{{ asset('public/images/documents/'.($kyc_detail['dl']['image'] ?? '')) }}" alt="" width="100">
+                                        </div>
+
+                                        <div class="col-md-6 mb-1">
                                             <label class="form-label" for="username">Bank Statement. </label>
-                                            <input type="text" name="bank_statement_number"  class="form-control" placeholder="Bank Statement" value="{{ old('bank_statement_number') }}"/>
+                                            <input type="text" name="bank_statement_number"  class="form-control" placeholder="Bank Statement" value="{{ isset($kyc_detail['bank_statement']['number']) ? $kyc_detail['bank_statement']['number'] :'' }}"/>
                                         </div>
 
                                         <div class="col-md-3 mb-1">
                                             <label class="form-label" for="username">Bank Statement Doc </label>
-                                            <div class="mb-1">
-                                                <img src="{{ asset('public/images/documents/'.($kyc_detail['bank_statement']['image'] ?? '')) }}" alt="" width="100">
-                                            </div>
+                                            
                                             <input type="file" name="bank_statement_doc"  class="form-control" placeholder="" value=""/>
                                         </div>
 
                                         <div class="col-md-3 mb-1">
+                                            <img onclick="ShowBigImae(this)" src="{{ asset('public/images/documents/'.($kyc_detail['bank_statement']['image'] ?? '')) }}" alt="" width="100">
+                                        </div>
+
+                                        <div class="col-md-6 mb-1">
                                             <label class="form-label" for="username">Cibil Score. </label>
-                                            <input type="text" name="cibil_score_name"  class="form-control" placeholder="Cibil Score" value="{{ old('cibil_score_name') }}"/>
+                                            <input type="text" name="cibil_score_name"  class="form-control" placeholder="Cibil Score" value="{{ isset($kyc_detail['cibil_score']['number']) ? $kyc_detail['cibil_score']['number'] :'' }}"/>
                                         </div>
 
                                         <div class="col-md-3 mb-1">
                                             <label class="form-label" for="username">Cibil Score Doc </label>
-                                            <div class="mb-1">
-                                                <img src="{{ asset('public/images/documents/'.($kyc_detail['ration_card']['image'] ?? '')) }}" alt="" width="100">
-                                            </div>
+                                            
                                             <input type="file" name="cibil_score_doc"  class="form-control" placeholder="" value=""/>
                                         </div>
 
                                         <div class="col-md-3 mb-1">
+                                            <img onclick="ShowBigImae(this)" src="{{ asset('public/images/documents/'.($kyc_detail['cibil_score']['image'] ?? '')) }}" alt="" width="100">
+                                        </div>
+
+                                        <div class="col-md-6 mb-1">
                                             <label class="form-label" for="username">Cheque . </label>
-                                            <input type="text" name="cheque_number"  class="form-control" placeholder="Cheque" value="{{ old('cheque_number') }}"/>
+                                            <input type="text" name="cheque_number"  class="form-control" placeholder="Cheque" value="{{ isset($kyc_detail['cheque']['number']) ? $kyc_detail['cheque']['number'] :'' }}"/>
                                         </div>
 
                                         <div class="col-md-3 mb-1">
                                             <label class="form-label" for="username">Cheque  Doc </label>
-                                            <div class="mb-1">
-                                                <img src="{{ asset('public/images/documents/'.($kyc_detail['ration_card']['image'] ?? '')) }}" alt="" width="100">
-                                            </div>
+                                            
                                             <input type="file" name="cheque_doc"  class="form-control" placeholder="" value=""/>
                                         </div>
 
                                         <div class="col-md-3 mb-1">
+                                            <img onclick="ShowBigImae(this)" src="{{ asset('public/images/documents/'.($kyc_detail['cheque']['image'] ?? '')) }}" alt="" width="100">
+                                        </div>
+
+                                        <div class="col-md-6 mb-1">
                                             <label class="form-label" for="username">Property Papers </label>
                                             <input type="text" name="property_paper_number"  class="form-control" placeholder="Property Papers" value="{{ isset($kyc_detail['property_type']['number']) ? $kyc_detail['property_type']['number'] :'' }}"/>
                                         </div>
 
                                         <div class="col-md-3 mb-1">
                                             <label class="form-label" for="username">Property Papers  Doc </label>
-                                            <div class="mb-1">
-                                                <img src="{{ asset('public/images/documents/'.($kyc_detail['property_type']['image'] ?? '')) }}" alt="" width="100">
-                                            </div>
                                             <input type="file" name="property_paper_doc"  class="form-control" placeholder="johndoe" value=""/>
                                         </div>
 
                                         <div class="col-md-3 mb-1">
+                                            <img onclick="ShowBigImae(this)" src="{{ asset('public/images/documents/'.($kyc_detail['property_type']['image'] ?? '')) }}" alt="" width="100">
+                                        </div>
+
+                                        <div class="col-md-6 mb-1">
                                             <label class="form-label" for="username">Other Document. </label>
-                                            <input type="text" name="other_document_name"  class="form-control" placeholder="Other Document" value="@if(isset($kyc->aadhar)){{$kyc->aadhar}}@else{{ isset($enquiry_document['other']['number']) ? $enquiry_document['other']['number'] :'' }}@endif"/>
+                                            <input type="text" name="other_document_name"  class="form-control" placeholder="Other Document" value="@if(isset($kyc_detail['other']['number'])){{$kyc_detail['other']['number']}}@else{{ isset($enquiry_document['other']['number']) ? $enquiry_document['other']['number'] :'' }}@endif"/>
                                         </div>
 
                                         <div class="col-md-3 mb-1">
@@ -553,10 +566,12 @@
                                                 }
                                             
                                             @endphp
-                                            <div class="mb-1">
-                                                <img src="{{ asset('public/images/documents/'.$aadher_image) }}" alt="" width="100">
-                                            </div>
+                                            
                                             <input type="file" name="other_document_doc"  class="form-control" placeholder="johndoe" value=""/>
+                                        </div>
+
+                                        <div class="col-md-3 mb-1">
+                                            <img onclick="ShowBigImae(this)" src="{{ asset('public/images/documents/'.$aadher_image) }}" alt="" width="100">
                                         </div>
 
                                         <div class="border-top mb-1"></div>
@@ -729,5 +744,32 @@
             </div>
         </div>
     </div>
+
+
+    <div class="modal fade modal-danger text-start" id="danger_ke_dklfhgb" tabindex="-1" aria-labelledby="myModalLabel120" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    {{-- <div class="modal-body" style="background-color: white !important;"> --}}
+                        <img id="modal-image" src="" alt="" width="100%">
+                    {{-- </div> --}}
+                    
+                </div>
+        </div>
+    </div>
+
+
+    <script>
+        function ShowBigImae(thisss){
+            var imageSrc = thisss.src;
+            var modalImage = document.getElementById('modal-image');
+            modalImage.src = imageSrc; // Set the src attribute of the modal's image
+            var modal = document.getElementById('danger_ke_dklfhgb');
+            $(modal).modal('show'); // Assuming you are using jQuery
+        }
+    </script>
     <!-- END: Content-->
 @endsection

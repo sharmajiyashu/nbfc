@@ -117,18 +117,49 @@ class ApplicationFormController extends Controller
         ]);
         self::uplodeKyc($customer->id,$request->only('aadhar_number','aadhar_doc','voter_id','voter_doc','pan_number','pan_doc',
         'ration_card_number','ration_card_doc','dl_number','dl_doc','bank_statement_number','bank_statement_doc','property_paper_number',
-        'other_document_name','other_document_doc','property_paper_doc'));
+        'other_document_name','other_document_doc','property_paper_doc','cibil_score_doc','cibil_score_name','cheque_number','cheque_doc'));
         return redirect()->back()->with('success','Save Update success');
     }
 
     function uplodeKyc($customer_id,$data){
+        if(!empty($data['cibil_score_name'])){
+            $cibil_score_doc = Helper::uploadDocument(isset($data['cibil_score_doc']) ? $data['cibil_score_doc'] : null);
+            $dd_data = [
+                'customer_id' => $customer_id,
+                'type' => Document::$cibil_score,
+                'name' => 'Cibil Score',
+                'desc' => isset($data['cibil_score_name']) ? $data['cibil_score_name'] :'',
+            ];
+            if($cibil_score_doc){
+                $dd_data['image'] = $cibil_score_doc;
+            }
+            $document = Document::updateOrCreate(['customer_id' => $customer_id ,'type' => Document::$cibil_score],$dd_data);
+        }
+
+        if(!empty($data['cheque_number'])){
+            $cheque_doc = Helper::uploadDocument(isset($data['cheque_doc']) ? $data['cheque_doc'] : null);
+            $dd_data = [
+                'customer_id' => $customer_id,
+                'type' => Document::$cheque,
+                'name' => 'Cheque',
+                'desc' => isset($data['cheque_number']) ? $data['cheque_number'] :'',
+            ];
+            if($cheque_doc){
+                $dd_data['image'] = $cheque_doc;
+            }
+            $document = Document::updateOrCreate(['customer_id' => $customer_id ,'type' => Document::$cheque],$dd_data);
+        }
+
+        
         if(!empty($data['other_document_name'])){
+
+            // print_r($data['other_document_name']);die;
             $other_document_doc = Helper::uploadDocument(isset($data['other_document_doc']) ? $data['other_document_doc'] : null);
             $dd_data = [
                 'customer_id' => $customer_id,
                 'type' => Document::$other,
                 'name' => 'Other Document',
-                'desc' => isset($data['other_document_name']),
+                'desc' => isset($data['other_document_name']) ? $data['other_document_name'] :'',
             ];
             if($other_document_doc){
                 $dd_data['image'] = $other_document_doc;
@@ -145,7 +176,7 @@ class ApplicationFormController extends Controller
                 'customer_id' => $customer_id,
                 'type' => Document::$property_type,
                 'name' => 'Property Type',
-                'desc' => isset($data['property_paper_number']),
+                'desc' => isset($data['property_paper_number']) ? $data['property_paper_number'] :'',
             ];
             if($property_paper_doc){
                 $dd_data['image'] = $property_paper_doc;
@@ -160,7 +191,7 @@ class ApplicationFormController extends Controller
                 'customer_id' => $customer_id,
                 'type' => Document::$bank_statement,
                 'name' => 'Bank Statement',
-                'desc' => isset($data['bank_statement_number']),
+                'desc' => isset($data['bank_statement_number']) ? $data['bank_statement_number'] :'',
             ];
             if($bank_statement_doc){
                 $dd_data['image'] = $bank_statement_doc;
@@ -174,7 +205,7 @@ class ApplicationFormController extends Controller
                 'customer_id' => $customer_id,
                 'type' => Document::$dl,
                 'name' => 'DL',
-                'desc' => isset($data['dl_number']),
+                'desc' => isset($data['dl_number']) ? $data['dl_number'] :'',
             ];
             if($dl_doc){
                 $dd_data['image'] = $dl_doc;
@@ -188,8 +219,8 @@ class ApplicationFormController extends Controller
                 'customer_id' => $customer_id,
                 'type' => Document::$ration_card,
                 'name' => 'Ration Card',
-                'desc' => isset($data['ration_card_number']),
-                'image' => Helper::uploadDocument($data['ration_card_doc']),
+                'desc' => isset($data['ration_card_number']) ? $data['ration_card_number'] :'',
+                // 'image' => Helper::uploadDocument($data['ration_card_doc']),
             ];
             if($ration_card_doc){
                 $dd_data['image'] = $ration_card_doc;
@@ -203,7 +234,7 @@ class ApplicationFormController extends Controller
                 'customer_id' => $customer_id,
                 'type' => Document::$pan,
                 'name' => 'Pan Number',
-                'desc' => isset($data['pan_number']),
+                'desc' => isset($data['pan_number']) ? $data['pan_number'] :'',
             ];
             if($pan_doc){
                 $dd_data['image'] = $pan_doc;
@@ -217,7 +248,7 @@ class ApplicationFormController extends Controller
                 'customer_id' => $customer_id,
                 'type' => Document::$aadhar,
                 'name' => 'Aadhar Number',
-                'desc' => isset($data['aadhar_number']),
+                'desc' => isset($data['aadhar_number']) ? $data['aadhar_number'] :'',
             ];
             if($aadhar_doc){
                 $dd_data['image'] = $aadhar_doc;
@@ -231,7 +262,7 @@ class ApplicationFormController extends Controller
                 'customer_id' => $customer_id,
                 'type' => Document::$voter_id,
                 'name' => 'Voter ID',
-                'desc' => isset($data['voter_id']),
+                'desc' => isset($data['voter_id']) ? $data['voter_id'] : '',
             ];
             if($voter_doc){
                 $dd_data['image'] = $voter_doc;
