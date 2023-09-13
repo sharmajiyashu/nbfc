@@ -16,6 +16,7 @@ return [
     'marital_status' => [
         'MARRIED','SEPARATED','DIVORCED','WIDOWED','UNMARRIED','UNTAGGED'
     ],
+    'enquiries_status' => ['reject','approved','pending']
 
 ];
 

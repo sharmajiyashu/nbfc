@@ -15,9 +15,10 @@ class EnquiryController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        $enquires = Enquiry::orderBy('id','desc')->get();
+        $page = $request->input('page',1);
+        $enquires = Enquiry::orderBy('id','desc')->paginate(10, ['*'], 'page',$page);
         return view('enquires.index',compact('enquires'));
     }
 
@@ -142,6 +143,15 @@ class EnquiryController extends Controller
         }else{
             return $store_code;
         }
+    }
+
+    public function changeStatus(Request $request){
+        Enquiry::where('id',$request->id)->update(['status' => $request->status ,'comment' => $request->comment]);
+        return redirect()->back()->with('success','Status changed successfully');
+    }
+
+    public function loanApplicationApprovel(){
+        
     }
 
 

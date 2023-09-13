@@ -47,46 +47,6 @@
 </script>
 
 
-
-
-<script src="{{ asset('public/admin/assets/datatable/dataTables.min.js') }}"></script>
-
-
-
-<script src="https://cdn.datatables.net/1.13.5/js/jquery.dataTables.min.js"></script>
-<script src="https://cdn.datatables.net/buttons/2.4.1/js/dataTables.buttons.min.js"></script>
-
-<script>
-    $(document).ready(function() {
-        $('.datatable_data').DataTable( {
-
-        });
-        
-        // $('.datatable_data_2').DataTable( {
-        //     "pageLength": 50,
-        //     "aaSorting": []
-        //     // "ordering": false
-        //     // "aaSorting": []
-        // });
-
-});
-
-$(document).ready( function() {
-    $('.datatable_data_2').DataTable( {
-        // dom: 'Bfrtip',
-        // buttons: [
-            //  'csv', 'excel',
-        // ],
-        "pageLength": 100,
-        "aaSorting": [],
-        "ordering": false,
-        "aaSorting": [],
-    } );
-} );
-
-
-</script>
-
 <script>
     $(document).ready(function() {
         

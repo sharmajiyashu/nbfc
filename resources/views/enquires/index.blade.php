@@ -50,9 +50,7 @@
                             <div class="card">
                                 
                                 <div class="card-datatable">
-                                    <table class="datatables-ajax table table-responsive datatable_data">
-
-                                        
+                                    <table class="datatables-ajax table table-responsive">
                                         <thead>
                                             <tr>
                                                 <th>Sr.no</th>
@@ -65,7 +63,7 @@
                                                 <th>Login Charge</th>
                                                 {{-- <th>Status</th> --}}
                                                 <th>Update Status</th>
-                                                <th>Member Application</th>
+                                                <th>Member Application Form</th>
                                                 <th>Created Date</th>
                                                 <th>Action</th>
                                             </tr>
@@ -83,14 +81,53 @@
                                                 <td>{{ $val->comment }}</td>
                                                 <td>{{ $val->login_charge }}</td>
                                                 
-                                                <td style="text-transform: capitalize;">{{ $val->status }} 
+                                                <td style="text-transform: uppercase;">{{ $val->status }} 
 
                                                     <br>
-                                                    <button class="btn btn-success">Update</button>
+                                                    <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#danger_ke{{ $val->id }}">Update</button>
+
+                                                    <div class="modal fade modal text-start" id="danger_ke{{ $val->id }}" tabindex="-1" aria-labelledby="myModalLabel120" aria-hidden="true">
+                                                        <div class="modal-dialog modal-dialog-centered">
+                                                            
+                                                                <div class="modal-content">
+                                                                    <div class="modal-header">
+                                                                        <h5 class="modal-title" id="myModalLabel120">Update Status</h5>
+                                                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                                    </div>
+                                                                    <form action="{{ route('enquiries.change_status') }}" method="POST">
+                                                                        @csrf
+                                                                        <input type="hidden" name="id" value="{{ $val->id }}">
+                                                                        <div class="modal-body">
+                                                                            <div class="row">
+                                                                                <div class="col-md-12 mb-1">
+                                                                                    <label for="">Status</label>
+                                                                                    <select class="select2 form-select" name="status" id="status"  required style="text-transform: uppercase;" >
+                                                                                        <option value="">Select Marital Status</option>
+                                                                                        @foreach (config('constant.enquiries_status') as $key => $value)
+                                                                                            <option value="{{ $key }}" {{ (isset($val->status) && $val->status == $value) ? 'selected' : '' }}>{{ $value }}</option>
+                                                                                        @endforeach
+                                                                                    </select>
+                                                                                </div>
+                                                                                <div class="col-md-12 mb-1">
+                                                                                    <textarea name="comment" id="" cols="3" rows="3" class="form-control" placeholder="Add your comment here....">{{ $val->comment }}</textarea>
+                                                                                </div>
+                                                                            </div>    
+                                                                        </div>
+                                                                        
+                                                                        <div class="modal-footer">
+                                                                            <button type="submit" class="btn btn-success" >Update</button>
+                                                                        </div>
+                                                                    </form>
+                                                                    
+                                                                </div>
+                                                        </div>
+                                                    </div>
+
+
                                                 </td>
                                                 
                                                 <td>
-                                                    <a href="{{ route('application-form',$val->enquiry_id) }}"><button class="btn btn-warning">Fill Application Form</button></a>
+                                                    <a href="{{ route('application-form',$val->enquiry_id) }}"><button class="btn btn-warning">Form</button></a>
                                                 </td>
                                                 <td>{{ date('d-M-y H:i:s',strtotime($val->created_at)) }}</td>
                                                 <td>
@@ -105,7 +142,11 @@
 
                                         </tbody>
                                     </table>
+
                                 </div>
+
+                                @include('_pagination', ['data' => $enquires])
+
                             </div>
                         </div>
                     </div>

@@ -31,6 +31,7 @@ return new class extends Migration
             $table->string('additional_charge')->nullable();
             $table->string('emi_amount')->nullable();
             $table->string('status')->default(0)->comment('0 => Pending');
+            $table->longText('reject_reason')->nullable();
             $table->softDeletes();
             $table->timestamps();
         });

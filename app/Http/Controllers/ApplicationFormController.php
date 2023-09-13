@@ -9,6 +9,7 @@ use App\Models\Customer;
 use App\Models\Document;
 use App\Models\Enquiry;
 use Illuminate\Http\Request;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 class ApplicationFormController extends Controller
 {
@@ -317,7 +318,32 @@ class ApplicationFormController extends Controller
         //
     }
 
-   
+    public function loanApplicationApprovel(Request $request){
+        $page = $request->input('page', 1);
+        $perPage = 10;
+    
+        // Use the query builder to build the query before calling paginate
+        $query = ApplicationForm::where('status', ApplicationForm::$pending);
+    
+        $applications = $query->paginate($perPage, ['*'], 'page', $page)->map(function($item){
+            $item->customer = Customer::select('first_name','last_name','mobile')->where('enquiry_id',$item->enquiry_id)->where('type',Customer::$customer)->first();
+            $item->loan_type = Helper::getLoneName($item->loan_type);
+            return $item;
+        });
+    
+        // $applications->paginate($perPage, ['*'], 'page', $page);
+    
+        return view('application-forms.approve-application', compact('applications'));
+    }
 
+    public function approved(Request $request){
+        ApplicationForm::where('id',$request->id)->update(['status'=>ApplicationForm::$approved]);
+        return redirect()->back()->with('success','Approved success');
+    }
+
+    public function reject(Request $request){
+        ApplicationForm::where('id',$request->id)->update(['status'=>ApplicationForm::$reject ,'reject_reason' => $request->reason]);
+        return redirect()->back()->with('success','Reject success');
+    }
 
 }

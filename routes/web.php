@@ -23,7 +23,11 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('logout',[LoginController::class,'logout'])->name('admin.logout');
     Route::resource('enquires',EnquiryController::class);
     Route::resource('application',ApplicationFormController::class);
+    Route::post('change_status',[EnquiryController::class,'changeStatus'])->name('enquiries.change_status');
     Route::get('application-form/{id}',[ApplicationFormController::class,'create'])->name('application-form');
+    Route::get('loan-application-approvels',[ApplicationFormController::class,'loanApplicationApprovel'])->name('loan_application_approvel');
+    Route::post('application_form.approved',[ApplicationFormController::class,'approved'])->name('application_form.approved');
+    Route::post('application_form.reject',[ApplicationFormController::class,'reject'])->name('application_form.reject');
 
 });
 

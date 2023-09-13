@@ -855,6 +855,7 @@ footer.footer-border {
   background: linear-gradient(118deg, #676d7d, #676d7d);
   box-shadow: 0 0 10px 1px rgba(115, 103, 240, 0.7);
   border-radius: 4px;
+  color: white;
   z-index: 1; }
 
 .main-menu.menu-light .navigation > li ul .active > a {

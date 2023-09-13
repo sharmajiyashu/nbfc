@@ -56,7 +56,7 @@
     
     <style>
         .card-datatable{
-            padding: 9px;
+            /* padding: 9px; */
         }
         tr{
             border-bottom: 1px solid rgb(105 94 94 / 20%) !important;
@@ -73,7 +73,7 @@
         }
         .fa{
             color: brown;
-    font-size: 21px;
+            font-size: 21px;
         }
     </style>
 </head>

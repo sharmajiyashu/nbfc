@@ -10,4 +10,9 @@ class Enquiry extends Model
     use HasFactory;
 
     protected $fillable = ['first_name','last_name','mobile','address','address_2','address_2','login_charge','pay_mode','pay_mode_desc','comment','status','pin_code','enquiry_id'];
+
+    static $pending = 'pending';
+    static $approved = 'approved';
+    static $reject = 'reject';
+    
 }

@@ -4,6 +4,7 @@ namespace App\Helpers;
 
 use App\Models\ApplicationForm;
 use App\Models\Document;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 class Helper
 {
@@ -104,5 +105,85 @@ class Helper
             return '';
         }
     }
+
+    public static function getLoneName($loan_type){
+        $loan = [
+            '1' => 'Gold Loan',
+            '2' => 'Group Loan',
+            '3' => 'Personal Loan',
+            '4' => 'Property Loan',
+            '5' => 'Vehicle Loan'
+        ];
+        return isset($loan[$loan_type]) ? $loan[$loan_type] :'';
+    }
+
+    public static function usePagination($data,$page){
+        $perPage = 10;
+        $data = new LengthAwarePaginator(
+            $data->forPage($page, $perPage),
+            $data->count(),
+            $perPage,
+            $page,
+            ['path' => request()->url()]
+        );
+
+        return $responseData = [
+            'current_page' => $data->currentPage(),
+            'data' => $data->values(),
+            'first_page_url' => $data->url(1),
+            'last_page' => $data->lastPage(),
+            'last_page_url' => $data->url($data->lastPage()),
+            'links' => [
+                'prev_page_url' => $data->previousPageUrl(),
+                'next_page_url' => $data->nextPageUrl(),
+            ],
+            'per_page' => $data->perPage(),
+            'total' => $data->total(),
+        ];
+    }
+
+    public static function PMT($interest, $period, $loan_amount, $additionalChargers)
+  {
+    $interest = (float) $interest;
+    $period = (float) $period;
+
+    if ($additionalChargers != null || $additionalChargers != "") {
+      $loan_amountt = (float) $loan_amount;
+      $loan_amount = $loan_amountt + $additionalChargers;
+
+      $period = $period;
+      $interest = $interest / 1200;
+      $amount = $interest * -$loan_amount * pow((1 + $interest), $period) / (1 - pow((1 + $interest), $period));
+      $rounded = round($amount);
+
+      if ($rounded % 10 < 5) {
+        $modified = floor($rounded / 10) * 10;
+        return $modified;
+      } else {
+
+        $modified = ceil($rounded / 10) * 10;
+        return $modified;
+      }
+
+
+    } else {
+
+      $loan_amountt = (float) $loan_amount;
+      // $loan_amount=$loan_amountt +$additionalChargers;
+      $period = $period;
+      $interest = $interest / 1200;
+      $amount = $interest * -$loan_amount * pow((1 + $interest), $period) / (1 - pow((1 + $interest), $period));
+      $rounded = round($amount);
+
+      if ($rounded % 10 < 5) {
+        $modified = floor($rounded / 10) * 10;
+        return $modified;
+      } else {
+
+        $modified = ceil($rounded / 10) * 10;
+        return $modified;
+      }
+    }
+  }
 
 }
