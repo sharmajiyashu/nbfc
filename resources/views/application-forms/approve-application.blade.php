@@ -94,7 +94,11 @@
                                                                                 </div>
                                                                                 <div class="col-md-12 mb-1">
                                                                                     <label for="">Approved Amount*</label>
-                                                                                    <input type="number"  class="form-control" value="{{ $val->loan_amount }}" max="{{ $val->loan_amount }}">
+                                                                                    <input type="number"  class="form-control" name="loan_amount" value="{{ $val->loan_amount }}" max="{{ $val->loan_amount }}">
+                                                                                </div>
+                                                                                <div class="col-md-12 mb-1">
+                                                                                    <label for="">Emi Start From*</label>
+                                                                                    <input type="date"  class="form-control" name="start_date" value="{{ date('Y-m-d') }}" max="">
                                                                                 </div>
                                                                             </div>    
                                                                         </div>

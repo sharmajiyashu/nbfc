@@ -7,7 +7,9 @@ use App\Models\Address;
 use App\Models\ApplicationForm;
 use App\Models\Customer;
 use App\Models\Document;
+use App\Models\Emi;
 use App\Models\Enquiry;
+use App\Models\LoanApplication;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
 
@@ -337,7 +339,42 @@ class ApplicationFormController extends Controller
     }
 
     public function approved(Request $request){
-        ApplicationForm::where('id',$request->id)->update(['status'=>ApplicationForm::$approved]);
+        $start_date = $request->start_date;
+        $loan_amount = $request->loan_amount;
+        $application = ApplicationForm::find($request->id);
+        $getInterestAndPrinciple = Helper::getInterestAndPrinciple($request->loan_amount,$application->rate_of_interest,$application->tenure);
+        $customer = Customer::where(['enquiry_id'=> $application->enquiry_id , 'type' => Customer::$customer])->first();
+        $emi = $getInterestAndPrinciple['emi'];
+        $loan = LoanApplication::updateOrCreate(['application_id' => $application->id],[
+            'loan_type' => $application->loan_type,
+            'application_id' => $application->id,
+            'customer_id' => $customer->id,
+            'additional_charge' => $application->additional_charge,
+            'amount_requested' => $application->loan_amount,
+            'loan_amount' => $loan_amount,
+            'tenure' => $application->tenure,
+            'emi' => isset($getInterestAndPrinciple['emi']) ? $getInterestAndPrinciple['emi'] :'',
+            'interest_amount' => isset($getInterestAndPrinciple['total_interest_amount']) ? $getInterestAndPrinciple['total_interest_amount'] :'',
+            'total_amount_paid' => isset($getInterestAndPrinciple['total_amount_paid']) ? $getInterestAndPrinciple['total_amount_paid'] :'',
+            'rate_of_interest' => isset($getInterestAndPrinciple['rate_of_interest']) ? $getInterestAndPrinciple['rate_of_interest'] :'',
+            'start_emi' => $start_date,
+        ]);
+        $data = Helper::showCalculation($request->loan_amount,$application->rate_of_interest,date('Y-m-d'),$application->tenure,$emi);
+        $loan_id = $loan->id;
+        $emi_no = 1;
+        foreach($data as $key=>$value){
+            $loan = Emi::updateOrCreate(['loan_id' => $loan_id ,'emi_number' => $emi_no],[
+                'loan_id' => $loan_id,
+                'emi' => $value['emi'],
+                'emi_number' => $emi_no,
+                'interest' => $value['interest'],
+                'principal' => $value['principal'],
+                'emi_date' => $value['payement_date'],
+                'due_amount' => $value['emi'],
+            ]);
+            $emi_no ++;
+        }
+        ApplicationForm::where('id',$request->id)->update(['status' => ApplicationForm::$approved]);
         return redirect()->back()->with('success','Approved success');
     }
 

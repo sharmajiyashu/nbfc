@@ -186,4 +186,54 @@ class Helper
     }
   }
 
+  public static function showCalculation($balance, $interest_rate, $payment_date, $tenure, $emi)
+  { 
+    $data = [];
+    for ($i = 1; $i <= $tenure; $i++) {
+        $interest = 0;
+        if (is_numeric($interest_rate) && is_numeric($balance)) {
+            $interest = (($interest_rate / 100) * $balance) / 12;
+
+        }
+        // $interest = (is_numeric($interest_rate / 100 ) * is_numeric($balance))/12;
+        $principal = $emi - $interest;
+        $balance = $balance - $principal;
+        if ($i != 1) {
+            $payment_date = date('Y-m-d', strtotime("+1 month", strtotime($payment_date)));
+        }
+        $principal2 = round($principal, 2);
+        $interest2 = round($interest, 2);
+        $data[] = ['payement_date' => $payment_date, 'interest' => $interest2, 'principal' => $principal2, 'emi' => $emi];
+        $this_month_date = date('Y-m');
+        $emi_month_date = date('Y-m', strtotime($payment_date));
+    }
+    return $data;
+  }
+
+
+  public static function getInterestAndPrinciple($principal,$rate_of_interest,$tenure){
+    $principal = $principal;  // Replace with your loan amount
+    $annual_interest_rate = $rate_of_interest;  // Replace with your annual interest rate
+    $loan_tenure_years = $tenure;  // Replace with your loan tenure in years
+
+    // Convert annual interest rate to monthly interest rate
+    $monthly_interest_rate = ($annual_interest_rate / 12) / 100;
+
+    // Convert loan tenure to months
+    $loan_tenure_months = $loan_tenure_years ;
+
+    // Calculate EMI using the formula
+    $emi = ($principal * $monthly_interest_rate * pow(1 + $monthly_interest_rate, $loan_tenure_months)) / (pow(1 + $monthly_interest_rate, $loan_tenure_months) - 1);
+
+    // Calculate total interest paid
+    $total_interest_paid = $emi * $loan_tenure_months - $principal;
+
+    // Calculate total amount paid
+    $total_amount_paid = $emi * $loan_tenure_months;
+
+
+    return ['loan_amount' => round($principal) , 'rate_of_interest' => $annual_interest_rate ,  'tenure' => $loan_tenure_years ,'emi' => round($emi) 
+    , 'total_interest_amount' => round($total_interest_paid) , 'total_amount_paid' => round($total_amount_paid)];
+  }
+
 }
