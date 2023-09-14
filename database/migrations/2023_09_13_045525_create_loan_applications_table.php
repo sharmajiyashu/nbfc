@@ -15,6 +15,7 @@ return new class extends Migration
     {
         Schema::create('loan_applications', function (Blueprint $table) {
             $table->id();
+            $table->string('loan_id')->nullable();
             $table->string('loan_type')->nullable();
             $table->string('application_id')->nullable();
             $table->string('customer_id')->nullable();

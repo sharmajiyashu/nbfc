@@ -4,6 +4,7 @@ namespace App\Helpers;
 
 use App\Models\ApplicationForm;
 use App\Models\Document;
+use App\Models\LoanApplication;
 use Illuminate\Pagination\LengthAwarePaginator;
 
 class Helper
@@ -203,7 +204,7 @@ class Helper
         }
         $principal2 = round($principal, 2);
         $interest2 = round($interest, 2);
-        $data[] = ['payement_date' => $payment_date, 'interest' => $interest2, 'principal' => $principal2, 'emi' => $emi];
+        $data[] = ['payement_date' => $payment_date, 'interest' => round($interest2), 'principal' => round($principal2), 'emi' => round($emi)];
         $this_month_date = date('Y-m');
         $emi_month_date = date('Y-m', strtotime($payment_date));
     }
@@ -234,6 +235,23 @@ class Helper
 
     return ['loan_amount' => round($principal) , 'rate_of_interest' => $annual_interest_rate ,  'tenure' => $loan_tenure_years ,'emi' => round($emi) 
     , 'total_interest_amount' => round($total_interest_paid) , 'total_amount_paid' => round($total_amount_paid)];
+  }
+
+  public static function generateLoanId($id){
+    $loan = [
+        '1' => 'G0L',
+        '2' => 'GRL',
+        '3' => 'PEL',
+        '4' => 'PRL',
+        '5' => 'VL'
+    ];
+    $store_code = $loan[$id].mt_rand(10000000, 99999999);
+    if(LoanApplication::where('loan_id',$store_code)->first()){
+        Helper::generateLoanId($id);
+    }else{
+        return $store_code;
+    }
+
   }
 
 }

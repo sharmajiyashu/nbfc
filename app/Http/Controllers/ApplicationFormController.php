@@ -359,7 +359,7 @@ class ApplicationFormController extends Controller
             'rate_of_interest' => isset($getInterestAndPrinciple['rate_of_interest']) ? $getInterestAndPrinciple['rate_of_interest'] :'',
             'start_emi' => $start_date,
         ]);
-        $data = Helper::showCalculation($request->loan_amount,$application->rate_of_interest,date('Y-m-d'),$application->tenure,$emi);
+        $data = Helper::showCalculation($request->loan_amount,$application->rate_of_interest,$start_date,$application->tenure,$emi);
         $loan_id = $loan->id;
         $emi_no = 1;
         foreach($data as $key=>$value){
