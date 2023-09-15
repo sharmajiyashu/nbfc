@@ -80,7 +80,7 @@
                                                 <th>Emi Date</th>
                                                 <th>Due Amount</th>
                                                 <th>Status</th>
-                                                <th>Action</th>
+                                                <th>Pay Emi</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -91,34 +91,46 @@
                                                 <th scope="row">{{ $val->emi_number }}</th>
                                                 <th><a href="#">{{ $val->emi }}</a><br> <span style="font-size: 10px;">({{ $val->principal }} + {{ $val->interest }})</span>
                                                 </th>
-                                                {{-- <td>{{ $val->principal }}</td> --}}
-                                                {{-- <td>{{ $val->interest }}</td> --}}
                                                 <td class="text-dark">{{ date('d-M-Y',strtotime($val->emi_date)) }}</td>
                                                 <td>
-                                                    <input type="number" @if ($val->emi_status == 2) @readonly(true)    @endif 
-                                                        value="{{ $val->due_amount }}" min="0" max="{{ $val->due_amount }}" class="form-control" id="emi_value_{{ $val->id }}" principal_rate="{{ $val->pri_rat }}"
-                                                        onchange="calculate()"
-                                                        >
-
-                                                    <span class="pr_int" ><span class="text-success">PRI : </span> <span id="span_principal_{{ $val->id }}">{{ $val->principal }}</span> ,
-                                                    <span class="text-warning"> INT :</span> <span id="span_interest_{{ $val->id }}" >{{ $val->interest }}</span> </span>
+                                                    @if ($val->status != 1)
+                                                        <input type="number" @if ($val->emi_status == 2) @readonly(true)    @endif 
+                                                            value="{{ $val->due_amount }}" min="0" max="{{ $val->due_amount }}" class="form-control" id="emi_value_{{ $val->id }}" principal_rate="{{ $val->pri_rat }}"
+                                                            onchange="calculate()"
+                                                            >
+                                                            <span class="pr_int" ><span class="text-success">PRI : </span> <span id="span_principal_{{ $val->id }}">{{ $val->principal }}</span> ,
+                                                            <span class="text-warning"> INT :</span> <span id="span_interest_{{ $val->id }}" >{{ $val->interest }}</span> </span>
+                                                    @else
+                                                        <h5 class="text-primary">EMI Paid</h5>
+                                                        <span class="text-dark">{{ date('d-M-Y',strtotime($val->partial_date)) }}</span>
+                                                    @endif
                                                 </td> 
                                                 @if ($val->status == 1)
                                                     <td class="avatar bg-light-success me-2">Paid</td>    
                                                 @elseif ($val->emi_status == 0)
                                                     <td class="avatar bg-light-danger me-2">Overdue</td>
+                                                   
                                                 @elseif ($val->emi_status == 2)
                                                     <td class="avatar bg-light-info me-2">Upcoming</td>
                                                     @elseif ($val->emi_status == 1)
-                                                    <td class="avatar bg-light-warning me-2">Due</td>
+                                                    <td ><span class="avatar bg-light-warning me-2">Due</span><br>
+                                                        @if ($val->partial_date)
+                                                            <span class="text-dark">{{ date('d-M-Y',strtotime($val->partial_date)) }}</span>
+                                                        @endif
+                                                    </td>
                                                 @endif
 
                                                 <td>
-                                                    <div class="form-check form-check-primary form-switch">
-                                                        <input class="form-check-input checked_checkbox" id="toggle_{{ $val->id }}" type="checkbox" @if ($val->emi_status != 2)
-                                                            checked
-                                                        @endif value="{{ $val->emi_status }}" onclick="checkEmi(this)" emi_status="{{ $val->emi_status }}" emi_id="{{ $val->id }}">
-                                                    </div>
+                                                    @if ($val->status != 1)
+                                                        <div class="form-check form-check-primary form-switch">
+                                                            <input class="form-check-input checked_checkbox" id="toggle_{{ $val->id }}" type="checkbox" @if ($val->emi_status != 2 && $val->status != 1)
+                                                                checked
+                                                            @elseif ($val->status == 1)
+                                                                @disabled(true)
+                                                            @endif value="{{ $val->emi_status }}" onclick="checkEmi(this)" emi_status="{{ $val->emi_status }}" emi_id="{{ $val->id }}">
+                                                        </div>    
+                                                    @endif
+                                                    
                                                 </td>
 
                                                
@@ -176,26 +188,27 @@
 
                             <div class="card">
                                 <div class="title_loan_2">Transaction Detail</div>
-                                <form action="{{ route('pay_emi') }}" method="POST">
+                                <form action="{{ route('pay_emi') }}" method="POST" onsubmit="return onSubmitForm()">
                                     @csrf
                                     <div class="card-body">
                                         <input type="hidden" name="emi_dues" value="" id="emi_to_pay_details">
+                                        <input type="hidden" name="loan_id" value="{{ $loan_application->id }}">
                                         <div class="row">
                                             <div class="col-md-6 mb-1">
                                                 <label for="">Transaction Date</label>
-                                                <input type="date" name="transaction_date" class="form-control" value="{{ date('Y-m-d') }}">
+                                                <input type="date" name="transaction_date" class="form-control" required value="{{ date('Y-m-d') }}">
                                             </div>
                                             <div class="col-md-6 mb-1">
                                                 <label for="">Net Emi to Collect </label>
-                                                <input type="number" id="net_collet_emi" name="total_emi" readonly class="form-control" value="{{ $dues_data['due_emi_amount'] }}">
+                                                <input type="number" id="net_collet_emi" name="total_emi" readonly class="form-control" value="" required>
                                             </div>
                                             <div class="col-md-6 mb-1">
                                                 <label for="">Interest Amount </label>
-                                                <input type="number" id="total_interest" name="total_interest" readonly class="form-control" value="{{ $dues_data['due_emi_interet'] }}">
+                                                <input type="number" id="total_interest" name="total_interest" readonly class="form-control" required  value="">
                                             </div>
                                             <div class="col-md-6 mb-1">
                                                 <label for="">Principal Amount </label>
-                                                <input type="number" readonly class="form-control" name="total_principal" id="total_principal" value="{{ $dues_data['due_emi_principal'] }}">
+                                                <input type="number" readonly class="form-control" name="total_principal" required id="total_principal" value="">
                                             </div>
                                             <div class="col-md-6 mb-1">
                                                 <label for="">Total Days Of Penalty </label>
@@ -207,19 +220,19 @@
                                             </div>
                                             <div class="col-md-6 mb-1">
                                                 <label for="">Net Amount To Collect  </label>
-                                                <input type="number" readonly id="net_total_amount" class="form-control" name="total_amount" value="{{ $dues_data['net_total_amount'] }}">
+                                                <input type="number" readonly id="net_total_amount" class="form-control" required name="total_amount" value="">
                                             </div>
                                             <div class="col-md-6 mb-1">
                                                 <label for="">Payment Mode </label>
-                                                <select class="select2 form-select" name="marital_status" id="jkhghkj"  required >
-                                                    <option value="cash">Cash</option>
-                                                    <option value="cheque">Cheque</option>
-                                                    <option value="on_transaction">Online Tr.</option>
+                                                <select class="select2 form-select" name="payment_mode" id=""  required >
+                                                    @foreach (config('constant.emi_payment_mode') as $key => $value)
+                                                        <option value="{{ $key }}" >{{ $value }}</option>
+                                                    @endforeach
                                                 </select>
                                             </div>
                                             <div class="col-md-12 mb-1">
                                                 <label for="">Remarks (if any)</label>
-                                                <textarea name="" id="" cols="3" rows="3" class="form-control"></textarea>
+                                                <textarea name="remark" id="" cols="3" rows="3" class="form-control"></textarea>
                                             </div>
                                             <div class="col-md-12 mb-1" style="text-align: center">
                                                 <button class="btn btn-success">Submit</button>
@@ -234,6 +247,56 @@
                     </div>
                 </section>
 
+                <section id="ajax-datatable">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="card">
+                                
+                                <div class="card-datatable">
+                                    <table class="datatables-ajax table table-responsive">
+                                        <thead>
+                                            <tr>
+                                                <th>Transaction ID</th>
+                                                <th>Amount</th>
+                                                <th>principal</th>
+                                                <th>interest</th>
+                                                <th>penalty days</th>
+                                                <th>penalty amount</th>
+                                                <th>net amount</th>
+                                                <th>Emi Count</th>
+                                                <th>Comment</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @php  $i=1; @endphp
+                                            @foreach($transactions as $key => $val)
+                                                <tr>
+                                                    <td><a href="#">{{ $val->transaction_id }}</a></td>
+                                                    <td>{{ $val->amount }}</td>
+                                                    <td>{{ $val->principal }}</td>
+                                                    <td>{{ $val->interest }}</td>
+                                                    <td>{{ $val->penalty_day }}</td>
+                                                    <td>{{ $val->penalty_amount }}</td>
+                                                    <td>{{ $val->net_amount }}</td>
+                                                    <td>{{ $val->emi_count }}</td>
+                                                    <td>{{ $val->comment }}</td>
+                                                </tr>
+                                            @php $i++; @endphp
+                                            @endforeach
+                                        </tbody>
+                                    </table>
+
+                                </div>
+
+                                {{-- @include('_pagination', ['data' => $loan_application]) --}}
+
+                            </div>
+                        </div>
+
+                        
+                    </div>
+                </section>
+
                 <!--/ Ajax Sourced Server-side -->
 
                 
@@ -245,34 +308,7 @@
     <!-- END: Content-->
 
 
-    <div class="modal fade modal text-start" id="danger_ke" tabindex="-1" aria-labelledby="myModalLabel120" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="myModalLabel120">Update Status</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    
-                        <div class="modal-body">
-                            <div class="row">
-                                <div class="col-md-12 mb-1">
-                                    <label for="">Status</label>
-                                </div>
-                                <div class="col-md-12 mb-1">
-                                    <textarea name="comment" id="" cols="3" rows="3" class="form-control" placeholder="Add your comment here....">{{ $val->comment }}</textarea>
-                                </div>
-                            </div>    
-                        </div>
-                        
-                        <div class="modal-footer">
-                            <button type="submit" class="btn btn-success"  data-bs-dismiss="modal" aria-label="Close" id="CancelAdvanceButton">Cancel</button>
-                            <button type="submit" class="btn btn-success" data-bs-dismiss="modal" aria-label="Close" id="confirmAdvanceButton">Ok</button>
-                        </div>
-                    
-                </div>
-        </div>
-    </div>
+    
 
 
     <script>
@@ -334,5 +370,18 @@
     <script>
         calculate();
     </script>
+
+<script>
+    function onSubmitForm() {
+        let amount = document.getElementById('net_total_amount').value;
+        const confirmed = window.confirm('Are you sure you want to pay emi '+amount+' ?');
+        if (confirmed) {
+            
+        } else {
+            alert('Form submission canceled'); 
+            return false;
+        }
+    }
+</script>
 
 @endsection

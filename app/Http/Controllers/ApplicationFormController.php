@@ -10,6 +10,7 @@ use App\Models\Document;
 use App\Models\Emi;
 use App\Models\Enquiry;
 use App\Models\LoanApplication;
+use App\Models\Transaction;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
 

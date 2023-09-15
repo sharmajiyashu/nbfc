@@ -6,11 +6,9 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Emi extends Model
+class EmiTransaction extends Model
 {
     use HasFactory,SoftDeletes;
-    protected $fillable = ['loan_id','emi_number','emi','due_amount','interest','principal','status','partial_date','emi_date'];
-    static $due = 0;
-    static $paid = 1;
 
+    protected $fillable = ['principal','interest','amount','emi_id','loan_id'];
 }

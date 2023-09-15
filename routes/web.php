@@ -34,7 +34,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::post('application_form.reject',[ApplicationFormController::class,'reject'])->name('application_form.reject');
     Route::get('dishbushment/{id}',[LoanApplicatioController::class,'dishbushment'])->name('dishbushment');
     Route::get('emi_collect',[LoanApplicatioController::class,'emiCollect'])->name('emi_collect');
-    Route::post('pay_emi',[EmiController::class,'pay_emi'])->name('pay_emi');
+    Route::post('pay_emi',[EmiController::class,'payEmi'])->name('pay_emi');
 });
 
 Route::get('login',[LoginController::class,'index'])->name('login');

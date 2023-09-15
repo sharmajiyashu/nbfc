@@ -16,7 +16,12 @@ return [
     'marital_status' => [
         'MARRIED','SEPARATED','DIVORCED','WIDOWED','UNMARRIED','UNTAGGED'
     ],
-    'enquiries_status' => ['reject','approved','pending']
+    'enquiries_status' => ['reject','approved','pending'],
+    'emi_payment_mode' => [
+        '1' => 'Cash',
+        '2' => 'Cheque',
+        '3' => 'Online Tr.'
+    ],
 
 ];
 
