@@ -37,7 +37,8 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('emi_collect',[LoanApplicatioController::class,'emiCollect'])->name('emi_collect');
     Route::post('pay_emi',[EmiController::class,'payEmi'])->name('pay_emi');
     Route::resource('journal_entries',JournalEntryController::class);
-    Route::get('profit_loss',[JournalEntryController::class,'profitLoss'])->name('profit_loss');
+    Route::get('profit&loss',[JournalEntryController::class,'profitLoss'])->name('profit_loss');
+    Route::get('balance-sheet',[JournalEntryController::class,'balanceSheet'])->name('balance_sheet');
 });
 
 Route::get('login',[LoginController::class,'index'])->name('login');

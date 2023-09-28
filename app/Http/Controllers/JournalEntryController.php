@@ -98,5 +98,9 @@ class JournalEntryController extends Controller
         return view('profit_loss.index');
     }
 
+    public function balanceSheet(){
+        return view('balance_sheet.index');
+    }
+
 
 }
