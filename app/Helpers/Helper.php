@@ -4,7 +4,9 @@ namespace App\Helpers;
 
 use App\Models\ApplicationForm;
 use App\Models\Document;
+use App\Models\LedgerAccount;
 use App\Models\LoanApplication;
+use GuzzleHttp\Promise\Create;
 use Illuminate\Pagination\LengthAwarePaginator;
 
 class Helper
@@ -261,6 +263,30 @@ class Helper
         return $store_code;
     }
 
+  }
+
+
+  public static function setDefaultGeneralAccount(){
+        LedgerAccount::updateOrCreate(['id' => 1],['name' => 'Cash', 'id' => 1]);
+        LedgerAccount::updateOrCreate(['id' => 2],['name' => 'EMI Interest Account', 'id' => 2]);
+        LedgerAccount::updateOrCreate(['id' => 3],['name' => 'Login Charge', 'id' => 3 ]);
+        LedgerAccount::updateOrCreate(['id' => 4],['name' => 'Processing Fees' ,'id' => 4]);
+        LedgerAccount::updateOrCreate(['id' => 5],['name' => 'Profit And Loss Account' , 'id' => 5]);
+        LedgerAccount::updateOrCreate(['id' => 6],['name' => '--' , 'status' => 0, 'id' => 6]);
+        LedgerAccount::updateOrCreate(['id' => 7],['name' => '--' , 'status' => 0, 'id' => 7]);
+        LedgerAccount::updateOrCreate(['id' => 8],['name' => '--' , 'status' => 0, 'id' => 8]);
+        LedgerAccount::updateOrCreate(['id' => 9],['name' => '--' , 'status' => 0, 'id' => 9]);
+        LedgerAccount::updateOrCreate(['id' => 10],['name' => '--' , 'status' => 0, 'id' => 10]);
+        LedgerAccount::updateOrCreate(['id' => 11],['name' => '--' , 'status' => 0, 'id' => 11]);
+        LedgerAccount::updateOrCreate(['id' => 12],['name' => '--' , 'status' => 0, 'id' => 12]);
+        LedgerAccount::updateOrCreate(['id' => 13],['name' => '--' , 'status' => 0, 'id' => 13]);
+        LedgerAccount::updateOrCreate(['id' => 14],['name' => '--' , 'status' => 0, 'id' => 14]);
+        LedgerAccount::updateOrCreate(['id' => 15],['name' => '--' , 'status' => 0, 'id' => 15]);
+        LedgerAccount::updateOrCreate(['id' => 16],['name' => '--' , 'status' => 0, 'id' => 16]);
+        LedgerAccount::updateOrCreate(['id' => 17],['name' => '--' , 'status' => 0, 'id' => 17]);
+        LedgerAccount::updateOrCreate(['id' => 18],['name' => '--' , 'status' => 0, 'id' => 18]);
+        LedgerAccount::updateOrCreate(['id' => 19],['name' => '--' , 'status' => 0, 'id' => 19]);
+        LedgerAccount::updateOrCreate(['id' => 20],['name' => '--' , 'status' => 0, 'id' => 20]);
   }
 
 }

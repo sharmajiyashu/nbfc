@@ -49,9 +49,12 @@
                                 <ol class="breadcrumb">
                                     <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Home</a>
                                     </li>
+                                    
                                     <li class="breadcrumb-item"><a href="{{ route('emi_collect') }}">Collect EMI</a>
                                     </li>
-                                    <li class="breadcrumb-item active">List
+                                    <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Loan ID : {{ $loan_application->loan_id }}</a>
+                                    </li>
+                                    <li class="breadcrumb-item active">Emi List
                                     </li>
                                 </ol>
                             </div>
@@ -86,8 +89,9 @@
                                         <tbody>
                                             @php  $i=1; @endphp
                                             @foreach($emis as $key => $val)
-                                            <input type="hidden" id="principle_rat_{{$val->id}}" value="{{ $val->pri_rat }}">
+                                            
                                             <tr>
+                                                <input type="hidden" id="principle_rat_{{$val->id}}" value="{{ $val->pri_rat }}">
                                                 <th scope="row">{{ $val->emi_number }}</th>
                                                 <th><a href="#">{{ $val->emi }}</a><br> <span style="font-size: 10px;">({{ $val->principal }} + {{ $val->interest }})</span>
                                                 </th>
@@ -248,6 +252,11 @@
                 </section>
 
                 <section id="ajax-datatable">
+                    <div style="    text-align: end;">
+                        <input type="text">
+                        <a href="{{ route('journal_entries.show',$loan_application->id) }}"><button class="btn btn-dark" > Journal Entry</button></a>
+                    </div>
+                    
                     <div class="row">
                         <div class="col-md-12">
                             <div class="card">
@@ -278,7 +287,62 @@
                                                     <td>{{ $val->penalty_day }}</td>
                                                     <td>{{ $val->penalty_amount }}</td>
                                                     <td>{{ $val->net_amount }}</td>
-                                                    <td>{{ $val->emi_count }}</td>
+                                                    <td><span class="avatar bg-light-warning me-2">{{ $val->emi_count }}</span>
+                                                        
+                                                        <a href="#" data-bs-toggle="modal" data-bs-target="#danger_ke{{ $val->id }}"><i class="fa fa-eye"></i></a>
+
+                                                        <div class="modal fade modal- text-start" id="danger_ke{{ $val->id }}" tabindex="-1" aria-labelledby="myModalLabel120" aria-hidden="true">
+                                                            <div class="modal-dialog modal-dialog-centered modal-lg">
+                                                                
+                                                                    <div class="modal-content">
+                                                                        <div class="modal-header">
+                                                                            <h5 class="modal-title" id="myModalLabel120">TR.No : {{ $val->transaction_id }}</h5>
+                                                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                                        </div>
+                                                                        <div class="modal-body">
+                                                                            <table class="datatables-ajax table table-responsive">
+                                                                                <thead>
+                                                                                    <tr>
+                                                                                        <th>Sr.no</th>
+                                                                                        <th>emi month</th>
+                                                                                        <th>Amount</th>
+                                                                                        <th>principal</th>
+                                                                                        <th>interest</th>
+                                                                                        {{-- <th>transaction Date</th> --}}
+                                                                                    </tr>
+                                                                                </thead>
+                                                                                <tbody>
+                                                                                    @php  $i=1; @endphp
+                                                                                    @foreach($val->emis as $key => $items)
+                                                                                        <tr>
+                                                                                            <td>{{ $i }}</td>
+                                                                                            <th>{{ date('M,Y',strtotime($items->emi_date)) }}</th>
+                                                                                            <td>{{ $items->principal }}</td>
+                                                                                            <td>{{ $items->interest }}</td>
+                                                                                            <td>{{ $items->amount }}</td>
+                                                                                            {{-- <td>{{ date('d M Y H:i:s',strtotime($val->created_at)) }}</td> --}}
+                                                                                        </tr>
+                                                                                    @php $i++; @endphp
+                                                                                    @endforeach
+                                                                                    <tr style="background-color: #dfc699;
+                                                                                    color;">
+                                                                                        <th></th>
+                                                                                        <th>TOTAL</th>
+                                                                                        <th>{{ $val->principal }}</th>
+                                                                                        <th>{{ $val->interest }}</th>
+                                                                                        <th>{{ $val->amount }}</th>
+                                                                                    </tr>
+                                                                                </tbody>
+                                                                            </table>
+                                                                        </div>
+                                                                    </div>
+                                                            </div>
+                                                        </div>
+
+                                                        {{-- {{ $val->emis }} --}}
+                                                    
+                                                    
+                                                    </td>
                                                     <td>{{ $val->comment }}</td>
                                                 </tr>
                                             @php $i++; @endphp

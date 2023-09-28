@@ -556,6 +556,8 @@ class ComposerStaticInite424086863e182831d7353ca6533081f
         'App\\Models\\Emi' => __DIR__ . '/../..' . '/app/Models/Emi.php',
         'App\\Models\\EmiTransaction' => __DIR__ . '/../..' . '/app/Models/EmiTransaction.php',
         'App\\Models\\Enquiry' => __DIR__ . '/../..' . '/app/Models/Enquiry.php',
+        'App\\Models\\JournalEntry' => __DIR__ . '/../..' . '/app/Models/JournalEntry.php',
+        'App\\Models\\LedgerAccount' => __DIR__ . '/../..' . '/app/Models/LedgerAccount.php',
         'App\\Models\\LoanApplication' => __DIR__ . '/../..' . '/app/Models/LoanApplication.php',
         'App\\Models\\Transaction' => __DIR__ . '/../..' . '/app/Models/Transaction.php',
         'App\\Models\\User' => __DIR__ . '/../..' . '/app/Models/User.php',

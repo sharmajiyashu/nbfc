@@ -2,9 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\Helper;
 use App\Models\Customer;
 use App\Models\Emi;
 use App\Models\EmiTransaction;
+use App\Models\JournalEntry;
+use App\Models\LedgerAccount;
 use App\Models\LoanApplication;
 use App\Models\Transaction;
 use Illuminate\Http\Request;
@@ -83,7 +86,14 @@ class EmiController extends Controller
         ];
         $loan_application = LoanApplication::find($loan_id);
         $customer = Customer::find($loan_application->customer_id);
-        $transactions = Transaction::where('loan_id',$loan_id)->get();
+        $transactions = Transaction::where('loan_id',$loan_id)->get()->map(function($transaction){
+            $emi_ids = json_decode($transaction->emi_ids);
+            $transaction['emis'] = EmiTransaction::whereIn('id',$emi_ids)->get()->map(function($emi){
+                $emi->emi_date = Emi::find($emi->emi_id)->emi_date;
+                return $emi;
+            });
+            return $transaction;
+        });
         return view('emi.show',compact('emis','loan_application','customer','dues_data','transactions'));
     }
 
@@ -146,9 +156,10 @@ class EmiController extends Controller
                         $total_interest_amount += $val->interest;
                         $total_principal_amount += $val->principal;
                         $emi_count ++;
-                        $emi_ids[] = $get_emi->id;
+                        
                         Emi::where('id',$get_emi->id)->update($emi_data_update);
-                        EmiTransaction::create(['emi_id' => $get_emi->id,'loan_id' => $get_emi->loan_id,'amount' => $val->pay_amount, 'principal' => $val->principal ,'interest' => $val->interest]);
+                        $emi_transaction = EmiTransaction::create(['emi_id' => $get_emi->id,'loan_id' => $get_emi->loan_id,'amount' => $val->pay_amount, 'principal' => $val->principal ,'interest' => $val->interest]);
+                        $emi_ids[] = $emi_transaction->id;
                     }
                 }
             }
@@ -168,12 +179,61 @@ class EmiController extends Controller
                 'payment_mode' => $request->payment_mode,
                 'payment_mode_dsc' => ''
             ]);
+
+            $loan = LoanApplication::find($request->loan_id);
+            $customer = Customer::where('id',$loan->customer_id)->first();
+            
+            Helper::setDefaultGeneralAccount();
+            $ledger_account = LedgerAccount::updateOrCreate(['loan_id' => $loan->id],[
+                'loan_id' => $loan->id,
+                'name' => $customer->first_name.' '.$customer->last_name,
+            ]);
+
+            $group = JournalEntry::count();
+            JournalEntry::create([
+                'group_id' => $group,
+                'ledger_id' => LedgerAccount::$cash,
+                'description' => 'with amount of Disbursement',
+                'loan_id' => $loan->id,
+                'amount' => $total_emi_amount,
+                'type' => 'dr'
+            ]);
+
+            JournalEntry::create([
+                'group_id' => $group,
+                'ledger_id' => $ledger_account->id,
+                'description' => 'with amount of Disbursement',
+                'loan_id' => $loan->id,
+                'amount' => $total_emi_amount,
+                'type' => 'cr'
+            ]);
+
+            JournalEntry::create([
+                'group_id' => $group,
+                'ledger_id' => $ledger_account->id,
+                'description' => 'with amount of Disbursement',
+                'loan_id' => $loan->id,
+                'amount' => $total_principal_amount,
+                'type' => 'dr'
+            ]);
+
+            JournalEntry::create([
+                'group_id' => $group,
+                'ledger_id' => LedgerAccount::$emi_interest,
+                'description' => 'with amount of Disbursement',
+                'loan_id' => $loan->id,
+                'amount' => $total_principal_amount,
+                'type' => 'cr'
+            ]);
+
             DB::commit();
-            return redirect()->back()->with('success',$net_amount.' paid successfully');
+
+            $message = $emi_count." Emi paid sccessully | Total Amount : ".$net_amount;
+            return redirect()->back()->with('success',$message);
         } catch (\Exception $e) {
             DB::rollback();
             Log::error('Error occurred: ' . $e->getMessage());
-            return response()->json(['error' => 'An error occurred'], 500);
+            return response()->json(['error' =>  $e->getMessage()], 500);
         }
     }
 

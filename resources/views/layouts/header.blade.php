@@ -23,7 +23,7 @@
                                 </div>
                             </a>
 
-                            <a class="d-flex" href="#">
+                            <a class="d-flex" href="{{ route('profit_loss') }}">
                                 <div class="list-item d-flex align-items-start">
                                     <div class="me-1">
                                         <span class="fa fa-inr"></span>

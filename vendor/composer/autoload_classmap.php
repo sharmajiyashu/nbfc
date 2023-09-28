@@ -32,6 +32,8 @@ return array(
     'App\\Models\\Emi' => $baseDir . '/app/Models/Emi.php',
     'App\\Models\\EmiTransaction' => $baseDir . '/app/Models/EmiTransaction.php',
     'App\\Models\\Enquiry' => $baseDir . '/app/Models/Enquiry.php',
+    'App\\Models\\JournalEntry' => $baseDir . '/app/Models/JournalEntry.php',
+    'App\\Models\\LedgerAccount' => $baseDir . '/app/Models/LedgerAccount.php',
     'App\\Models\\LoanApplication' => $baseDir . '/app/Models/LoanApplication.php',
     'App\\Models\\Transaction' => $baseDir . '/app/Models/Transaction.php',
     'App\\Models\\User' => $baseDir . '/app/Models/User.php',
