@@ -190,59 +190,104 @@ class EmiController extends Controller
             ]);
 
             $group = JournalEntry::count();
-            JournalEntry::create([
-                'group_id' => $group,
-                'ledger_id' => LedgerAccount::$cash,
-                'description' => 'with amount of Disbursement',
-                'loan_id' => $loan->id,
-                'amount' => $total_emi_amount,
-                'type' => 'dr'
-            ]);
 
-            JournalEntry::create([
-                'group_id' => $group,
-                'ledger_id' => $ledger_account->id,
-                'description' => 'with amount of Disbursement',
-                'loan_id' => $loan->id,
-                'amount' => $total_emi_amount,
-                'type' => 'cr'
-            ]);
+            if($net_amount > 0){
+                JournalEntry::create([
+                    'group_id' => $group,
+                    'ledger_id' => LedgerAccount::$cash,
+                    'description' => 'with amount of paying emi',
+                    'loan_id' => $loan->id,
+                    'amount' => $net_amount,
+                    'type' => 'dr'
+                ]);
+    
+                JournalEntry::create([
+                    'group_id' => $group,
+                    'ledger_id' => $ledger_account->id,
+                    'description' => 'with amount of paying emi',
+                    'loan_id' => $loan->id,
+                    'amount' => $net_amount,
+                    'type' => 'cr'
+                ]);
+            }
 
-            JournalEntry::create([
-                'group_id' => $group,
-                'ledger_id' => $ledger_account->id,
-                'description' => 'with amount of Disbursement',
-                'loan_id' => $loan->id,
-                'amount' => $total_principal_amount,
-                'type' => 'dr'
-            ]);
+            // emi interest 
+            if($total_interest_amount > 0){
+                JournalEntry::create([
+                    'group_id' => $group,
+                    'ledger_id' => $ledger_account->id,
+                    'description' => 'with amount of emi interest',
+                    'loan_id' => $loan->id,
+                    'amount' => $total_interest_amount,
+                    'type' => 'dr'
+                ]);
+    
+                JournalEntry::create([
+                    'group_id' => $group,
+                    'ledger_id' => LedgerAccount::$emi_interest,
+                    'description' => 'with amount of emi interest',
+                    'loan_id' => $loan->id,
+                    'amount' => $total_interest_amount,
+                    'type' => 'cr'
+                ]);
+    
+                JournalEntry::create([
+                    'group_id' => $group,
+                    'ledger_id' => LedgerAccount::$emi_interest,
+                    'description' => 'with amount of emi interest',
+                    'loan_id' => $loan->id,
+                    'amount' => $total_interest_amount,
+                    'type' => 'dr'
+                ]);
+    
+                JournalEntry::create([
+                    'group_id' => $group,
+                    'ledger_id' => LedgerAccount::$profit_and_loss,
+                    'description' => 'with amount of emi interest',
+                    'loan_id' => $loan->id,
+                    'amount' => $total_interest_amount,
+                    'type' => 'cr'
+                ]);
+            }
 
-            JournalEntry::create([
-                'group_id' => $group,
-                'ledger_id' => LedgerAccount::$emi_interest,
-                'description' => 'with amount of Disbursement',
-                'loan_id' => $loan->id,
-                'amount' => $total_principal_amount,
-                'type' => 'cr'
-            ]);
-
-            JournalEntry::create([
-                'group_id' => $group,
-                'ledger_id' => LedgerAccount::$emi_interest,
-                'description' => 'with amount of Disbursement',
-                'loan_id' => $loan->id,
-                'amount' => $total_principal_amount,
-                'type' => 'dr'
-            ]);
-
-            JournalEntry::create([
-                'group_id' => $group,
-                'ledger_id' => LedgerAccount::$profit_and_loss,
-                'description' => 'with amount of Disbursement',
-                'loan_id' => $loan->id,
-                'amount' => $total_principal_amount,
-                'type' => 'cr'
-            ]);
+            // penalty_amount
+            if($request->penalty_amount > 0){
+                JournalEntry::create([
+                    'group_id' => $group,
+                    'ledger_id' => $ledger_account->id,
+                    'description' => 'with amount of penalty amount',
+                    'loan_id' => $loan->id,
+                    'amount' => $request->penalty_amount,
+                    'type' => 'dr'
+                ]);
+    
+                JournalEntry::create([
+                    'group_id' => $group,
+                    'ledger_id' => LedgerAccount::$penalty_amount,
+                    'description' => 'with amount of penalty amount',
+                    'loan_id' => $loan->id,
+                    'amount' => $request->penalty_amount,
+                    'type' => 'cr'
+                ]);
+    
+                JournalEntry::create([
+                    'group_id' => $group,
+                    'ledger_id' => LedgerAccount::$penalty_amount,
+                    'description' => 'with amount of penalty amount',
+                    'loan_id' => $loan->id,
+                    'amount' => $request->penalty_amount,
+                    'type' => 'dr'
+                ]);
+    
+                JournalEntry::create([
+                    'group_id' => $group,
+                    'ledger_id' => LedgerAccount::$profit_and_loss,
+                    'description' => 'with amount of penalty amount',
+                    'loan_id' => $loan->id,
+                    'amount' => $request->penalty_amount,
+                    'type' => 'cr'
+                ]);
+            }
 
             DB::commit();
 

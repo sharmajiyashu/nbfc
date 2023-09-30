@@ -273,8 +273,8 @@ class Helper
         LedgerAccount::updateOrCreate(['id' => 3],['name' => 'Login Charge', 'id' => 3 ]);
         LedgerAccount::updateOrCreate(['id' => 4],['name' => 'Processing Fees' ,'id' => 4]);
         LedgerAccount::updateOrCreate(['id' => 5],['name' => 'Profit And Loss ' , 'id' => 5]);
-        LedgerAccount::updateOrCreate(['id' => 6],['name' => '--' , 'status' => 0, 'id' => 6]);
-        LedgerAccount::updateOrCreate(['id' => 7],['name' => '--' , 'status' => 0, 'id' => 7]);
+        LedgerAccount::updateOrCreate(['id' => 6],['name' => 'Additional Charge' , 'status' => 1, 'id' => 6]);
+        LedgerAccount::updateOrCreate(['id' => 7],['name' => 'Penalty Amount' , 'status' => 1, 'id' => 7]);
         LedgerAccount::updateOrCreate(['id' => 8],['name' => '--' , 'status' => 0, 'id' => 8]);
         LedgerAccount::updateOrCreate(['id' => 9],['name' => '--' , 'status' => 0, 'id' => 9]);
         LedgerAccount::updateOrCreate(['id' => 10],['name' => '--' , 'status' => 0, 'id' => 10]);

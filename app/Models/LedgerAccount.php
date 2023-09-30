@@ -18,5 +18,7 @@ class LedgerAccount extends Model
     static $login_in_charge = 3;
     static $processing_fees = 4;
     static $profit_and_loss = 5;
+    static $additional_charge = 6;
+    static $penalty_amount = 7;
 
 }

@@ -139,63 +139,114 @@ class ApplicationFormController extends Controller
                 'name' => $request->first_name.' '. $request->last_name,
             ]);
             
+
+            $toal_pro_add = $request->processing_fees + $request->additional_charge;
+            
             $group = JournalEntry::count();
-            // Cash ac db to customer ac
-            JournalEntry::create([
-                'group_id' => $group,
-                'ledger_id' => LedgerAccount::$cash,
-                'description' => 'with amount of processing charge ',
-                'enquiry_id' => $application_form->enquiry_id,
-                'amount' => $request->processing_fees,
-                'type' => 'dr'
-            ]);
 
-            JournalEntry::create([
-                'group_id' => $group,
-                'ledger_id' => $ledger_account->id,
-                'description' => 'with amount of processing charge',
-                'enquiry_id' => $application_form->enquiry_id,
-                'amount' => $request->processing_fees,
-                'type' => 'cr'
-            ]);
+            if($toal_pro_add > 0){
+                // Cash ac db to customer ac
+                JournalEntry::create([
+                    'group_id' => $group,
+                    'ledger_id' => LedgerAccount::$cash,
+                    'description' => 'with amount of processing charge ',
+                    'enquiry_id' => $application_form->enquiry_id,
+                    'amount' => $toal_pro_add,
+                    'type' => 'dr'
+                ]);
 
-            // customer ac db to processing fees
-            JournalEntry::create([
-                'group_id' => $group,
-                'ledger_id' => $application_form->enquiry_id,
-                'description' => 'with amount of processing charge ',
-                'enquiry_id' => $application_form->enquiry_id,
-                'amount' => $request->processing_fees,
-                'type' => 'dr'
-            ]);
+                JournalEntry::create([
+                    'group_id' => $group,
+                    'ledger_id' => $ledger_account->id,
+                    'description' => 'with amount of processing charge',
+                    'enquiry_id' => $application_form->enquiry_id,
+                    'amount' => $toal_pro_add,
+                    'type' => 'cr'
+                ]);
+            }
+            
 
-            JournalEntry::create([
-                'group_id' => $group,
-                'ledger_id' => LedgerAccount::$processing_fees,
-                'description' => 'with amount of processing charge',
-                'enquiry_id' => $application_form->enquiry_id,
-                'amount' => $request->processing_fees,
-                'type' => 'cr'
-            ]);
+            if($request->processing_fees > 0){
+                // customer ac db to processing fees
+                JournalEntry::create([
+                    'group_id' => $group,
+                    'ledger_id' => $ledger_account->id,
+                    'description' => 'with amount of processing charge ',
+                    'enquiry_id' => $application_form->enquiry_id,
+                    'amount' => $request->processing_fees,
+                    'type' => 'dr'
+                ]);
 
-            // processing fess ac dr to profit and loss ac
-            JournalEntry::create([
-                'group_id' => $group,
-                'ledger_id' => LedgerAccount::$processing_fees,
-                'description' => 'with amount of processing charge ',
-                'enquiry_id' => $application_form->enquiry_id,
-                'amount' => $request->processing_fees,
-                'type' => 'dr'
-            ]);
+                JournalEntry::create([
+                    'group_id' => $group,
+                    'ledger_id' => LedgerAccount::$processing_fees,
+                    'description' => 'with amount of processing charge',
+                    'enquiry_id' => $application_form->enquiry_id,
+                    'amount' => $request->processing_fees,
+                    'type' => 'cr'
+                ]);
 
-            JournalEntry::create([
-                'group_id' => $group,
-                'ledger_id' => LedgerAccount::$profit_and_loss,
-                'description' => 'with amount of processing charge',
-                'enquiry_id' => $application_form->enquiry_id,
-                'amount' => $request->processing_fees,
-                'type' => 'cr'
-            ]);
+                // processing fess ac dr to profit and loss ac
+                JournalEntry::create([
+                    'group_id' => $group,
+                    'ledger_id' => LedgerAccount::$processing_fees,
+                    'description' => 'with amount of processing charge ',
+                    'enquiry_id' => $application_form->enquiry_id,
+                    'amount' => $request->processing_fees,
+                    'type' => 'dr'
+                ]);
+
+                JournalEntry::create([
+                    'group_id' => $group,
+                    'ledger_id' => LedgerAccount::$profit_and_loss,
+                    'description' => 'with amount of processing charge',
+                    'enquiry_id' => $application_form->enquiry_id,
+                    'amount' => $request->processing_fees,
+                    'type' => 'cr'
+                ]);
+            }
+
+            if($request->additional_charge > 0){
+                // Additional charge ac db to processing fees
+                JournalEntry::create([
+                    'group_id' => $group,
+                    'ledger_id' => $ledger_account->id,
+                    'description' => 'with amount of additional charge ',
+                    'enquiry_id' => $application_form->enquiry_id,
+                    'amount' => $request->additional_charge,
+                    'type' => 'dr'
+                ]);
+
+                JournalEntry::create([
+                    'group_id' => $group,
+                    'ledger_id' => LedgerAccount::$additional_charge,
+                    'description' => 'with amount of additional charge',
+                    'enquiry_id' => $application_form->enquiry_id,
+                    'amount' => $request->additional_charge,
+                    'type' => 'cr'
+                ]);
+
+                // Additional charge ac dr to profit and loss ac
+                JournalEntry::create([
+                    'group_id' => $group,
+                    'ledger_id' => LedgerAccount::$additional_charge,
+                    'description' => 'with amount of additional charge ',
+                    'enquiry_id' => $application_form->enquiry_id,
+                    'amount' => $request->additional_charge,
+                    'type' => 'dr'
+                ]);
+
+                JournalEntry::create([
+                    'group_id' => $group,
+                    'ledger_id' => LedgerAccount::$profit_and_loss,
+                    'description' => 'with amount of additional charge',
+                    'enquiry_id' => $application_form->enquiry_id,
+                    'amount' => $request->additional_charge,
+                    'type' => 'cr'
+                ]);
+            }
+
+             
 
         return redirect()->back()->with('success','Save Update success');
     }

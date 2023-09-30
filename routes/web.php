@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\ApplicationFormController;
+use App\Http\Controllers\Controller;
 use App\Http\Controllers\EmiController;
 use App\Http\Controllers\EnquiryController;
 use App\Http\Controllers\JournalEntryController;
@@ -37,6 +38,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('emi_collect',[LoanApplicatioController::class,'emiCollect'])->name('emi_collect');
     Route::post('pay_emi',[EmiController::class,'payEmi'])->name('pay_emi');
     Route::resource('journal_entries',JournalEntryController::class);
+    Route::get('reset',[Controller::class,'reset'])->name('reset');
     Route::get('profit&loss',[JournalEntryController::class,'profitLoss'])->name('profit_loss');
     Route::get('balance-sheet',[JournalEntryController::class,'balanceSheet'])->name('balance_sheet');
 });

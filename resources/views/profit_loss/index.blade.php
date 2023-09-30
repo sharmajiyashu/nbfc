@@ -59,7 +59,6 @@
                                                 <th style="width: 10%;">Amount</th>
                                                 <th style="width: 40%;">Income</th>
                                                 <th style="width: 10%;">Amount</th>
-
                                             </tr>
                                             
                                         </thead>
@@ -81,7 +80,7 @@
                                                 <th>Accounting</th>
                                                 <th>0</th>
                                                 <th>Additional Charge</th>
-                                                <th>0</th>
+                                                <th>{{ $data['additional_charge'] }}</th>
                                             </tr>
                                             <tr>
                                                 <th>-</th>

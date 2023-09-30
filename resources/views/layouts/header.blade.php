@@ -95,7 +95,7 @@
                                 </div>
                             </a>
 
-                            <a class="d-flex" href="#">
+                            <a class="d-flex" href="{{ route('reset') }}">
                                 <div class="list-item d-flex align-items-start">
                                     <div class="me-1">
                                         <span class="fa fa-random"></span>
