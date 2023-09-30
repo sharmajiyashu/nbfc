@@ -226,6 +226,24 @@ class EmiController extends Controller
                 'type' => 'cr'
             ]);
 
+            JournalEntry::create([
+                'group_id' => $group,
+                'ledger_id' => LedgerAccount::$emi_interest,
+                'description' => 'with amount of Disbursement',
+                'loan_id' => $loan->id,
+                'amount' => $total_principal_amount,
+                'type' => 'dr'
+            ]);
+
+            JournalEntry::create([
+                'group_id' => $group,
+                'ledger_id' => LedgerAccount::$profit_and_loss,
+                'description' => 'with amount of Disbursement',
+                'loan_id' => $loan->id,
+                'amount' => $total_principal_amount,
+                'type' => 'cr'
+            ]);
+
             DB::commit();
 
             $message = $emi_count." Emi paid sccessully | Total Amount : ".$net_amount;

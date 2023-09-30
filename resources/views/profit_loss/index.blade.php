@@ -93,7 +93,7 @@
                                                 <th>-</th>
                                                 <th>-</th>
                                                 <th>Penalty Charge</th>
-                                                <th>0</th>
+                                                <th>{{ $data['penalty_amount'] }}</th>
                                             </tr>
                                             <tr>
                                                 <th>-</th>

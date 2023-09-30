@@ -109,11 +109,13 @@ class JournalEntryController extends Controller
         $processing_fees = ApplicationForm::sum('processing_fees');
         $login_charge = Enquiry::sum('login_charge');
         $emi_interest = Transaction::sum('interest');
-        $total = $processing_fees + $login_charge + $emi_interest;
+        $penalty_amount = Transaction::sum('penalty_amount');
+        $total = $processing_fees + $login_charge + $emi_interest + $penalty_amount;
         $data = [
             'processing_fees' => $processing_fees,
             'login_charge' => $login_charge,
             'emi_interest' => $emi_interest,
+            'penalty_amount' => $penalty_amount,
             'total' => $total
         ];
         return view('profit_loss.index',compact('data'));
