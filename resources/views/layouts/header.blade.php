@@ -11,7 +11,7 @@
                     font-weight: 900;">ACCOUNTS <span class="caret"></span></h5> </a>
                     <ul class="dropdown-menu dropdown-menu-media dropdown">
                         <li class="scrollable-container media-list">
-                            <a class="d-flex" href="#">
+                            <a class="d-flex" href="{{ route('journal_entries.index') }}">
                                 <div class="list-item d-flex align-items-start">
                                     <div class="me-1">
                                         <span class="fa fa-list-ul"></span>

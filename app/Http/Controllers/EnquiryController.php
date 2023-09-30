@@ -6,7 +6,11 @@ use App\Helpers\Helper;
 use App\Http\Requests\StoreEnquiryRequest;
 use App\Models\Document;
 use App\Models\Enquiry;
+use App\Models\JournalEntry;
+use App\Models\LedgerAccount;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class EnquiryController extends Controller
 {
@@ -40,55 +44,102 @@ class EnquiryController extends Controller
      */
     public function store(StoreEnquiryRequest $request)
     {
-        $validated = $request->validated();
-        $validated['enquiry_id'] = self::GenerateId();
+        try {
+            DB::beginTransaction();
+            $validated = $request->validated();
+            $validated['enquiry_id'] = self::GenerateId();
 
-        $enquiry = Enquiry::create($validated);
+            $enquiry = Enquiry::create($validated);
 
-        if(!empty($request->aadhar_number)){
-            Document::create([
+            if(!empty($request->aadhar_number)){
+                Document::create([
+                    'enquiry_id' => $enquiry->id,
+                    'type' => Document::$aadhar,
+                    'name' => 'Aadhar Number',
+                    'desc' => $request->aadhar_number,
+                    'image' => Helper::uploadDocument($request->aadhar_doc),
+                ]);
+            }
+
+            if(!empty($request->voder_id)){
+                Document::create([
+                    'enquiry_id' => $enquiry->id,
+                    'type' => Document::$voter_id,
+                    'name' => 'Voter Id',
+                    'desc' => $request->voder_id,
+                    'image' => Helper::uploadDocument($request->voder_doc),
+                ]);
+            }
+
+            if(!empty($request->pan_number)){
+                Document::create([
+                    'enquiry_id' => $enquiry->id,
+                    'type' => Document::$pan,
+                    'name' => 'Pan Number',
+                    'desc' => $request->pan_number,
+                    'image' => Helper::uploadDocument($request->pan_doc),
+                ]);
+            }
+
+            if(!empty($request->other_document)){
+                Document::create([
+                    'enquiry_id' => $enquiry->id,
+                    'type' => Document::$other,
+                    'name' => 'Other Document',
+                    'desc' => $request->other_document,
+                    'image' => Helper::uploadDocument($request->other_doc),
+                ]);
+            }
+
+            Helper::setDefaultGeneralAccount();
+            $ledger_account = LedgerAccount::updateOrCreate(['enquiry_id' => $enquiry->id],[
                 'enquiry_id' => $enquiry->id,
-                'type' => Document::$aadhar,
-                'name' => 'Aadhar Number',
-                'desc' => $request->aadhar_number,
-                'image' => Helper::uploadDocument($request->aadhar_doc),
+                'name' => $enquiry->first_name.' '.$enquiry->last_name,
             ]);
-        }
 
-        if(!empty($request->voder_id)){
-            Document::create([
+            $group = JournalEntry::count();
+            JournalEntry::create([
+                'group_id' => $group,
+                'ledger_id' => LedgerAccount::$cash,
+                'description' => 'with amount of log in charge ',
                 'enquiry_id' => $enquiry->id,
-                'type' => Document::$voter_id,
-                'name' => 'Voter Id',
-                'desc' => $request->voder_id,
-                'image' => Helper::uploadDocument($request->voder_doc),
+                'amount' => $request->login_charge,
+                'type' => 'dr'
             ]);
-        }
 
-        if(!empty($request->pan_number)){
-            Document::create([
+            JournalEntry::create([
+                'group_id' => $group,
+                'ledger_id' => LedgerAccount::$login_in_charge,
+                'description' => 'with amount of log in charge',
                 'enquiry_id' => $enquiry->id,
-                'type' => Document::$pan,
-                'name' => 'Pan Number',
-                'desc' => $request->pan_number,
-                'image' => Helper::uploadDocument($request->pan_doc),
+                'amount' => $request->login_charge,
+                'type' => 'cr'
             ]);
-        }
 
-        if(!empty($request->other_document)){
-            Document::create([
+            JournalEntry::create([
+                'group_id' => $group,
+                'ledger_id' => LedgerAccount::$login_in_charge,
+                'description' => 'with amount of log in charge',
                 'enquiry_id' => $enquiry->id,
-                'type' => Document::$other,
-                'name' => 'Other Document',
-                'desc' => $request->other_document,
-                'image' => Helper::uploadDocument($request->other_doc),
+                'amount' => $request->login_charge,
+                'type' => 'dr'
             ]);
+
+            JournalEntry::create([
+                'group_id' => $group,
+                'ledger_id' => LedgerAccount::$profit_and_loss,
+                'description' => 'with amount of log in charge',
+                'enquiry_id' => $enquiry->id,
+                'amount' => $request->login_charge,
+                'type' => 'cr'
+            ]);
+            DB::commit();
+            return redirect()->route('enquires.index')->with('success','Enquiry create successfully');
+        } catch (\Exception $e) {
+            DB::rollback();
+            Log::error('Error occurred: ' . $e->getMessage());
+            return response()->json(['error' =>  $e->getMessage()], 500);
         }
-
-        return redirect()->route('enquires.index')->with('success','Enquiry create successfully');
-
-
-
     }
 
     /**

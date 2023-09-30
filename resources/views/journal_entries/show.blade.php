@@ -21,10 +21,22 @@
         <div class="header-navbar-shadow"></div>
         <div class="content-wrapper container-xxl p-0">
             <div class="content-header row">
-                <div class="content-header-left col-md-12 col-12 mb-2">
+                <div class="content-header-left col-md-9 col-12 mb-2">
                     <div class="row breadcrumbs-top">
-                        <div class="col-12" style="text-align: center">
-                            <h2 class="content-header-title ">Journal Entries</h2>
+                        <div class="col-12">
+                            <h2 class="content-header-title float-start mb-0">Journal Entries</h2>
+                            <div class="breadcrumb-wrapper">
+                                <ol class="breadcrumb">
+                                    <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Home</a>
+                                    </li>
+                                    <li class="breadcrumb-item"><a href="{{ route('emi_collect') }}">Collect EMI</a>
+                                    </li>
+                                    <li class="breadcrumb-item"><a href="{{ route('emis.show',$loan->id) }}">Loan ID : {{ $loan->loan_id }}</a>
+                                    </li>
+                                    <li class="breadcrumb-item active">Journal Entries
+                                    </li>
+                                </ol>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -47,8 +59,7 @@
                                                 <th>DESCRIPTION</th>
                                                 <th>DR</th>
                                                 <th>CR</th>
-                                                <th>Enquiry ID </th>
-                                                <th>Loan ID</th>
+                                                {{-- <th>Loan ID</th> --}}
                                                 <th>Date</th>
                                             </tr>
                                         </thead>
@@ -77,17 +88,11 @@
                                                     </th>
                                                     @php if($item->type == 'cr'){$i++; } @endphp
 
-                                                    @if ($item->type == 'cr')
+                                                    {{-- @if ($item->type == 'cr')
                                                         <td class="text-primary">
-                                                            {{ $item->enquiry_id }}
+                                                            {{ $item->loan_id }}
                                                         </td>    
-                                                    @endif
-
-                                                    @if ($item->type == 'cr')
-                                                        <td class="text-primary">
-                                                             {{ $item->loan_id }}
-                                                        </td>    
-                                                    @endif
+                                                    @endif --}}
 
                                                     @if ($item->type == 'cr')
                                                         <td>

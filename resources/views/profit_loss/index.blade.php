@@ -68,32 +68,32 @@
                                                 <th>Bank Charge</th>
                                                 <th>0</th>
                                                 <th>Processing Fees</th>
-                                                <th>245</th>
+                                                <th>{{ $data['processing_fees'] }}</th>
 
                                             </tr>
                                             <tr>
                                                 <th>Advertising</th>
                                                 <th>0</th>
                                                 <th>Log in Charge</th>
-                                                <th>450</th>
+                                                <th>{{ $data['login_charge'] }}</th>
                                             </tr>
                                             <tr>
                                                 <th>Accounting</th>
                                                 <th>0</th>
                                                 <th>Additional Charge</th>
-                                                <th>975</th>
+                                                <th>0</th>
                                             </tr>
                                             <tr>
                                                 <th>-</th>
                                                 <th>-</th>
                                                 <th>EMI Interest Account</th>
-                                                <th>10,520</th>
+                                                <th>{{ $data['emi_interest'] }}</th>
                                             </tr>
                                             <tr>
                                                 <th>-</th>
                                                 <th>-</th>
                                                 <th>Penalty Charge</th>
-                                                <th>1526</th>
+                                                <th>0</th>
                                             </tr>
                                             <tr>
                                                 <th>-</th>
@@ -109,15 +109,15 @@
                                             </tr>
                                             <tr>
                                                 <th>Profit/Loss</th>
-                                                <th>13,116</th>
+                                                <th>{{ $data['total'] }}</th>
                                                 <th>-</th>
                                                 <th>-</th>
                                             </tr>
                                             <tr style="background-color:#f5dfb7">
                                                 <th>Total</th>
-                                                <th>13,116</th>
+                                                <th>{{ $data['total'] }}</th>
                                                 <th>Total</th>
-                                                <th>13,116</th>
+                                                <th>{{ $data['total'] }}</th>
                                             </tr>
                                             
                                         </tbody>

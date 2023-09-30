@@ -4,6 +4,7 @@ namespace App\Helpers;
 
 use App\Models\ApplicationForm;
 use App\Models\Document;
+use App\Models\Enquiry;
 use App\Models\LedgerAccount;
 use App\Models\LoanApplication;
 use GuzzleHttp\Promise\Create;
@@ -268,10 +269,10 @@ class Helper
 
   public static function setDefaultGeneralAccount(){
         LedgerAccount::updateOrCreate(['id' => 1],['name' => 'Cash', 'id' => 1]);
-        LedgerAccount::updateOrCreate(['id' => 2],['name' => 'EMI Interest Account', 'id' => 2]);
+        LedgerAccount::updateOrCreate(['id' => 2],['name' => 'EMI Interest', 'id' => 2]);
         LedgerAccount::updateOrCreate(['id' => 3],['name' => 'Login Charge', 'id' => 3 ]);
         LedgerAccount::updateOrCreate(['id' => 4],['name' => 'Processing Fees' ,'id' => 4]);
-        LedgerAccount::updateOrCreate(['id' => 5],['name' => 'Profit And Loss Account' , 'id' => 5]);
+        LedgerAccount::updateOrCreate(['id' => 5],['name' => 'Profit And Loss ' , 'id' => 5]);
         LedgerAccount::updateOrCreate(['id' => 6],['name' => '--' , 'status' => 0, 'id' => 6]);
         LedgerAccount::updateOrCreate(['id' => 7],['name' => '--' , 'status' => 0, 'id' => 7]);
         LedgerAccount::updateOrCreate(['id' => 8],['name' => '--' , 'status' => 0, 'id' => 8]);
@@ -287,6 +288,12 @@ class Helper
         LedgerAccount::updateOrCreate(['id' => 18],['name' => '--' , 'status' => 0, 'id' => 18]);
         LedgerAccount::updateOrCreate(['id' => 19],['name' => '--' , 'status' => 0, 'id' => 19]);
         LedgerAccount::updateOrCreate(['id' => 20],['name' => '--' , 'status' => 0, 'id' => 20]);
+  }
+
+  public static function getEnquirybyLoanId($loan_id){
+    $loan = LoanApplication::find($loan_id);
+    $application = ApplicationForm::find($loan->application_id);
+    return $application->enquiry_id;
   }
 
 }

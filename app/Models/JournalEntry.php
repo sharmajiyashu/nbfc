@@ -9,6 +9,6 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class JournalEntry extends Model
 {
     use HasFactory,SoftDeletes;
-    protected $fillable = ['ledger_id','description','type','group_id','loan_id','amount'];
+    protected $fillable = ['ledger_id','description','type','group_id','loan_id','amount','enquiry_id'];
 
 }

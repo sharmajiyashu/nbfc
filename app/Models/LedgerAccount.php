@@ -11,7 +11,7 @@ class LedgerAccount extends Model
 {
     use HasFactory,SoftDeletes;
 
-    protected $fillable = ['name','type','loan_id','status'];
+    protected $fillable = ['name','type','loan_id','status','enquiry_id'];
 
     static $cash = 1;
     static $emi_interest = 2;

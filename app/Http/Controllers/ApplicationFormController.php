@@ -9,10 +9,14 @@ use App\Models\Customer;
 use App\Models\Document;
 use App\Models\Emi;
 use App\Models\Enquiry;
+use App\Models\JournalEntry;
+use App\Models\LedgerAccount;
 use App\Models\LoanApplication;
 use App\Models\Transaction;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class ApplicationFormController extends Controller
 {
@@ -56,7 +60,7 @@ class ApplicationFormController extends Controller
      */
     public function store(Request $request)
     {
-        ApplicationForm::updateOrCreate(['enquiry_id' => $request->enquiry_id],[
+        $application_form = ApplicationForm::updateOrCreate(['enquiry_id' => $request->enquiry_id],[
             'enquiry_id' => $request->enquiry_id,
             'enrollment_date' => $request->enrollment_date,
             'processing_fees' => isset($request->processing_fees) ? $request->processing_fees : 0,
@@ -105,6 +109,7 @@ class ApplicationFormController extends Controller
             'district' => $request->postal_district,
             'country' => $request->postal_country,
         ]);
+        
 
         Address::updateOrCreate(['customer_id' => $customer->id,'type' => Address::$permanent_address],[
             'customer_id' => $customer->id,
@@ -122,6 +127,76 @@ class ApplicationFormController extends Controller
         self::uplodeKyc($customer->id,$request->only('aadhar_number','aadhar_doc','voter_id','voter_doc','pan_number','pan_doc',
         'ration_card_number','ration_card_doc','dl_number','dl_doc','bank_statement_number','bank_statement_doc','property_paper_number',
         'other_document_name','other_document_doc','property_paper_doc','cibil_score_doc','cibil_score_name','cheque_number','cheque_doc'));
+
+            $get_all_jl_old_data = JournalEntry::where('ledger_id',LedgerAccount::$processing_fees)->where('enquiry_id',$application_form->enquiry_id)->first();
+            if(isset($get_all_jl_old_data->group_id)){
+                JournalEntry::where('group_id',$get_all_jl_old_data->group_id)->delete();
+            }
+            
+            Helper::setDefaultGeneralAccount();
+            $ledger_account = LedgerAccount::updateOrCreate(['enquiry_id' => $application_form->enquiry_id],[
+                'enquiry_id' => $application_form->enquiry_id,
+                'name' => $request->first_name.' '. $request->last_name,
+            ]);
+            
+            $group = JournalEntry::count();
+            // Cash ac db to customer ac
+            JournalEntry::create([
+                'group_id' => $group,
+                'ledger_id' => LedgerAccount::$cash,
+                'description' => 'with amount of processing charge ',
+                'enquiry_id' => $application_form->enquiry_id,
+                'amount' => $request->processing_fees,
+                'type' => 'dr'
+            ]);
+
+            JournalEntry::create([
+                'group_id' => $group,
+                'ledger_id' => $ledger_account->id,
+                'description' => 'with amount of processing charge',
+                'enquiry_id' => $application_form->enquiry_id,
+                'amount' => $request->processing_fees,
+                'type' => 'cr'
+            ]);
+
+            // customer ac db to processing fees
+            JournalEntry::create([
+                'group_id' => $group,
+                'ledger_id' => $application_form->enquiry_id,
+                'description' => 'with amount of processing charge ',
+                'enquiry_id' => $application_form->enquiry_id,
+                'amount' => $request->processing_fees,
+                'type' => 'dr'
+            ]);
+
+            JournalEntry::create([
+                'group_id' => $group,
+                'ledger_id' => LedgerAccount::$processing_fees,
+                'description' => 'with amount of processing charge',
+                'enquiry_id' => $application_form->enquiry_id,
+                'amount' => $request->processing_fees,
+                'type' => 'cr'
+            ]);
+
+            // processing fess ac dr to profit and loss ac
+            JournalEntry::create([
+                'group_id' => $group,
+                'ledger_id' => LedgerAccount::$processing_fees,
+                'description' => 'with amount of processing charge ',
+                'enquiry_id' => $application_form->enquiry_id,
+                'amount' => $request->processing_fees,
+                'type' => 'dr'
+            ]);
+
+            JournalEntry::create([
+                'group_id' => $group,
+                'ledger_id' => LedgerAccount::$profit_and_loss,
+                'description' => 'with amount of processing charge',
+                'enquiry_id' => $application_form->enquiry_id,
+                'amount' => $request->processing_fees,
+                'type' => 'cr'
+            ]);
+
         return redirect()->back()->with('success','Save Update success');
     }
 
@@ -340,43 +415,83 @@ class ApplicationFormController extends Controller
     }
 
     public function approved(Request $request){
-        $start_date = $request->start_date;
-        $loan_amount = $request->loan_amount;
-        $application = ApplicationForm::find($request->id);
-        $getInterestAndPrinciple = Helper::getInterestAndPrinciple($request->loan_amount,$application->rate_of_interest,$application->tenure);
-        $customer = Customer::where(['enquiry_id'=> $application->enquiry_id , 'type' => Customer::$customer])->first();
-        $emi = $getInterestAndPrinciple['emi'];
-        $loan = LoanApplication::updateOrCreate(['application_id' => $application->id],[
-            'loan_type' => $application->loan_type,
-            'application_id' => $application->id,
-            'customer_id' => $customer->id,
-            'additional_charge' => $application->additional_charge,
-            'amount_requested' => $application->loan_amount,
-            'loan_amount' => $loan_amount,
-            'tenure' => $application->tenure,
-            'emi' => isset($getInterestAndPrinciple['emi']) ? $getInterestAndPrinciple['emi'] :'',
-            'interest_amount' => isset($getInterestAndPrinciple['total_interest_amount']) ? $getInterestAndPrinciple['total_interest_amount'] :'',
-            'total_amount_paid' => isset($getInterestAndPrinciple['total_amount_paid']) ? $getInterestAndPrinciple['total_amount_paid'] :'',
-            'rate_of_interest' => isset($getInterestAndPrinciple['rate_of_interest']) ? $getInterestAndPrinciple['rate_of_interest'] :'',
-            'start_emi' => $start_date,
-        ]);
-        $data = Helper::showCalculation($request->loan_amount,$application->rate_of_interest,$start_date,$application->tenure,$emi);
-        $loan_id = $loan->id;
-        $emi_no = 1;
-        foreach($data as $key=>$value){
-            $loan = Emi::updateOrCreate(['loan_id' => $loan_id ,'emi_number' => $emi_no],[
-                'loan_id' => $loan_id,
-                'emi' => $value['emi'],
-                'emi_number' => $emi_no,
-                'interest' => $value['interest'],
-                'principal' => $value['principal'],
-                'emi_date' => $value['payement_date'],
-                'due_amount' => $value['emi'],
+        try {
+            DB::beginTransaction();
+            $start_date = $request->start_date;
+            $loan_amount = $request->loan_amount;
+            $application = ApplicationForm::find($request->id);
+            $getInterestAndPrinciple = Helper::getInterestAndPrinciple($request->loan_amount,$application->rate_of_interest,$application->tenure);
+            $customer = Customer::where(['enquiry_id'=> $application->enquiry_id , 'type' => Customer::$customer])->first();
+            $emi = $getInterestAndPrinciple['emi'];
+            $loan = LoanApplication::updateOrCreate(['application_id' => $application->id],[
+                'loan_type' => $application->loan_type,
+                'application_id' => $application->id,
+                'customer_id' => $customer->id,
+                'additional_charge' => $application->additional_charge,
+                'amount_requested' => $application->loan_amount,
+                'loan_amount' => $loan_amount,
+                'tenure' => $application->tenure,
+                'emi' => isset($getInterestAndPrinciple['emi']) ? $getInterestAndPrinciple['emi'] :'',
+                'interest_amount' => isset($getInterestAndPrinciple['total_interest_amount']) ? $getInterestAndPrinciple['total_interest_amount'] :'',
+                'total_amount_paid' => isset($getInterestAndPrinciple['total_amount_paid']) ? $getInterestAndPrinciple['total_amount_paid'] :'',
+                'rate_of_interest' => isset($getInterestAndPrinciple['rate_of_interest']) ? $getInterestAndPrinciple['rate_of_interest'] :'',
+                'start_emi' => $start_date,
             ]);
-            $emi_no ++;
+
+            LedgerAccount::where('enquiry_id',$application->enquiry_id)->update(['loan_id' => $loan->id]);
+            JournalEntry::where('enquiry_id',$application->enquiry_id)->update(['loan_id' => $loan->id]);
+
+
+            Helper::setDefaultGeneralAccount();
+            $ledger_account = LedgerAccount::updateOrCreate(['loan_id' => $loan->id],[
+                'loan_id' => $loan->id,
+                'name' => $customer->first_name.' '.$customer->last_name,
+            ]);
+
+            $group = JournalEntry::count();
+            JournalEntry::create([
+                'group_id' => $group,
+                'ledger_id' => $ledger_account->id,
+                'description' => 'with amount of Disbursement',
+                'loan_id' => $loan->id,
+                'enquiry_id' => Helper::getEnquirybyLoanId($loan->id),
+                'amount' => $request->loan_amount,
+                'type' => 'dr'
+            ]);
+
+            JournalEntry::create([
+                'group_id' => $group,
+                'ledger_id' => LedgerAccount::$cash,
+                'description' => 'with amount of Disbursement',
+                'loan_id' => $loan->id,
+                'enquiry_id' => Helper::getEnquirybyLoanId($loan->id),
+                'amount' => $request->loan_amount,
+                'type' => 'cr'
+            ]);
+
+            $data = Helper::showCalculation($request->loan_amount,$application->rate_of_interest,$start_date,$application->tenure,$emi);
+            $loan_id = $loan->id;
+            $emi_no = 1;
+            foreach($data as $key=>$value){
+                $loan = Emi::updateOrCreate(['loan_id' => $loan_id ,'emi_number' => $emi_no],[
+                    'loan_id' => $loan_id,
+                    'emi' => $value['emi'],
+                    'emi_number' => $emi_no,
+                    'interest' => $value['interest'],
+                    'principal' => $value['principal'],
+                    'emi_date' => $value['payement_date'],
+                    'due_amount' => $value['emi'],
+                ]);
+                $emi_no ++;
+            }
+            ApplicationForm::where('id',$request->id)->update(['status' => ApplicationForm::$approved]);
+            DB::commit();
+            return redirect()->back()->with('success','Approved success');
+        } catch (\Exception $e) {
+            DB::rollback();
+            Log::error('Error occurred: ' . $e->getMessage());
+            return response()->json(['error' =>  $e->getMessage()], 500);
         }
-        ApplicationForm::where('id',$request->id)->update(['status' => ApplicationForm::$approved]);
-        return redirect()->back()->with('success','Approved success');
     }
 
     public function reject(Request $request){

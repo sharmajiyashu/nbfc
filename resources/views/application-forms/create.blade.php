@@ -683,17 +683,17 @@
 
                                         <div class="col-md-6 mb-1">
                                             <label class="form-label" for="username">Loan Amount </label>
-                                            <input type="text" name="loan_amount"  class="form-control" required placeholder="Loan Amount" value="@if(isset($application_form->loan_amount)){{$application_form->loan_amount}}@else{{ old('loan_amount') }}@endif"/>
+                                            <input type="number" name="loan_amount" onkeyup="showEmi()" class="form-control" id="loan_amount" required placeholder="Loan Amount" value="@if(isset($application_form->loan_amount)){{$application_form->loan_amount}}@else{{ old('loan_amount') }}@endif"/>
                                         </div>
 
                                         <div class="col-md-6 mb-1">
                                             <label class="form-label" for="username">Rate Of Intrest </label>
-                                            <input type="number" name="rate_of_interest"  class="form-control" required placeholder="Rate Of Intrest" value="@if(isset($application_form->rate_of_interest)){{$application_form->rate_of_interest}}@else{{ old('rate_of_interest') }}@endif"/>
+                                            <input type="text" step="0.01" name="rate_of_interest"  onkeyup="showEmi()" class="form-control" id="interes_rate" required placeholder="Rate Of Intrest" value="@if(isset($application_form->rate_of_interest)){{$application_form->rate_of_interest}}@else{{ old('rate_of_interest') }}@endif"/>
                                         </div>
 
                                         <div class="col-md-6 mb-1">
                                             <label class="form-label" for="username">Tenure </label>
-                                            <input type="text" name="tenure"  class="form-control" placeholder="Tenure" value="@if(isset($application_form->tenure)){{$application_form->tenure}}@else{{ old('tenure') }}@endif"/>
+                                            <input type="number" name="tenure"  onkeyup="showEmi()" class="form-control" id="tenure" placeholder="Tenure" value="@if(isset($application_form->tenure)){{$application_form->tenure}}@else{{ old('tenure') }}@endif"/>
                                         </div>
 
                                         <div class="col-md-6 mb-1">
@@ -713,12 +713,12 @@
 
                                         <div class="col-md-3 mb-1">
                                             <label class="form-label" for="username">Additional Charges </label>
-                                            <input type="text" name="additional_charge"  class="form-control" required placeholder="Additional Charges" value="@if(isset($application_form->additional_charge)){{$application_form->additional_charge}}@else{{ old('additional_charge')}}@endif"/>
+                                            <input type="number" name="additional_charge"  class="form-control" required placeholder="Additional Charges" value="@if(isset($application_form->additional_charge)){{$application_form->additional_charge}}@else{{ old('additional_charge')}}@endif"/>
                                         </div>
 
                                         <div class="col-md-3 mb-1">
                                             <label class="form-label" for="username">Emi Amount</label>
-                                            <input type="text" name="emi_amount"  class="form-control" required placeholder="Emi Amount" value="@if(isset($application_form->emi_amount)){{$application_form->emi_amount}}@else{{ old('emi_amount') }}@endif"/>
+                                            <input type="text" readonly name="emi_amount" id="emi_amount"  class="form-control" required placeholder="Emi Amount" value="@if(isset($application_form->emi_amount)){{$application_form->emi_amount}}@else{{ old('emi_amount') }}@endif"/>
                                         </div>
 
                                     </div>
@@ -769,6 +769,31 @@
             modalImage.src = imageSrc; // Set the src attribute of the modal's image
             var modal = document.getElementById('danger_ke_dklfhgb');
             $(modal).modal('show'); // Assuming you are using jQuery
+        }
+    </script>
+
+
+    <script>
+        function calculateEMI(loanAmount, annualInterestRate, tenureInMonths) {
+            // Calculate the monthly interest rate
+            const monthlyInterestRate = (annualInterestRate / 12) / 100;
+
+            // Calculate the total number of monthly payments
+            const totalPayments = tenureInMonths;
+
+            // Calculate EMI
+            const emi = loanAmount * monthlyInterestRate * Math.pow(1 + monthlyInterestRate, totalPayments) / (Math.pow(1 + monthlyInterestRate, totalPayments) - 1);
+
+            return emi;
+        }
+
+        function showEmi(){
+            const loanAmount = document.getElementById("loan_amount").value; // Loan amount in dollars
+            const annualInterestRate = document.getElementById("interes_rate").value; // Annual interest rate (6.5%)
+            const tenureInMonths = document.getElementById("tenure").value; // Loan tenure in months
+
+            const emi = calculateEMI(loanAmount, annualInterestRate, tenureInMonths);
+            document.getElementById("emi_amount").value = Math.round(emi);
         }
     </script>
     <!-- END: Content-->
